@@ -1,4 +1,4 @@
-# Patty: Pattern Matching for Python
+# Pampy: Pattern Matching for Python
 Pampy is pretty small, pretty fast, and often makes your code more readable, and easier to reason about.
 
 ![Pampy logo](imgs/pampy.png "Pampy in Start Wars")
@@ -120,8 +120,6 @@ The same goes for dictionaries.
 pet = { 'type': 'dog', 'details': { 'age': 3 } }
 
 match(pet, { 'details': { 'age': _ } }, lambda age: age)        # => 3
-
-# or:
 
 match(pet, { _ : { 'age': _ } },        lambda a, b: (a, b))    # => ('details', 3)
 ```
