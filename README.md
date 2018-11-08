@@ -5,7 +5,7 @@ Pampy is pretty small, pretty fast, and often makes your code more readable, and
 
 ## How it works
 
-The patterns are evaluated in the order they appear.
+Patterns are evaluated in the order they appear.
 
 ```python
 from pampy import match, _
@@ -66,7 +66,7 @@ from pampy import match, HEAD, TAIL, _
 
 x = [1,2,3,4]
 
-match(x, [1, 2, TAIL],	lambda tail: tail)                   # => [3, 4]
+match(x, [1, 2, TAIL], lambda tail: tail)                   # => [3, 4]
 
 match(x, [HEAD, TAIL], lambda head, tail: (head, tail))     # => (1, [2, 3, 4])
 
@@ -77,9 +77,9 @@ match(x, [HEAD, TAIL], lambda head, tail: (head, tail))     # => (1, [2, 3, 4])
 ```python
 from pampy import match, _
 
-x = [1,[2,3],4]
+x = [1, [2, 3], 4]
 
-match(x, [1, [_, 3], _], lambda a, b: [1, [a, 3], b])   # => [1,[2,3],4]
+match(x, [1, [_, 3], _], lambda a, b: [1, [a, 3], b])       # => [1, [2, 3], 4]
 ```
 
 ## You can go crazy, and implement match with match itself
