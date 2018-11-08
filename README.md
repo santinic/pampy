@@ -1,4 +1,4 @@
-# Pampy: Pattern Matching for Python
+# Patty: Pattern Matching for Python
 Pampy is pretty small, pretty fast, and often makes your code more readable, and easier to reason about.
 
 ![Pampy logo](imgs/pampy.png "Pampy in Start Wars")
@@ -40,7 +40,7 @@ from pampy import match, REST, _
 def lisp(exp):
     return match(exp,
         int,                lambda x: x,
-        (callable, REST),   lambda f, rest: f(*[lisp(a) for a in args]))
+        (callable, REST),   lambda f, rest: f(*map(lisp, rest))
 
 lisp((+, 1, (-, 3, (sqrt 2))))         # => 1 + (3 - sqrt(2))
 lisp((print (+ "hello " "lisp")))      # => "hello lisp"
@@ -64,11 +64,11 @@ match(x,
 ```python
 from pampy import match, HEAD, TAIL, _
 
-x = [1, 2, 3, 4]
+x = [1, 2, 3]
 
-match(x, [1, 2, TAIL], lambda tail: tail)                   # => [3, 4]
+match(x, [1, TAIL],     lambda tail: tail)                  # => [2, 3]
 
-match(x, [HEAD, TAIL], lambda head, tail: (head, tail))     # => (1, [2, 3, 4])
+match(x, [HEAD, TAIL],  lambda head, tail: (head, tail))    # => (1, [2, 3])
 
 ```
 

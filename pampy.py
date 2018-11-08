@@ -6,7 +6,7 @@ from typing import Tuple, List
 from helpers import UnderscoreType, HeadType, TailType, BoxedArgs, PaddedValue, pairwise
 
 ValueType = (int, float, str, bool)
-_ = UnderscoreType()
+_ = ANY = UnderscoreType()
 HEAD = HeadType()
 REST = TAIL = TailType()
 
@@ -30,7 +30,9 @@ def run(action, var):
 
 
 def match_value(pattern, value) -> Tuple[bool, List]:
-    if isinstance(pattern, ValueType):
+    if value is PaddedValue:
+        return False, []
+    elif isinstance(pattern, ValueType):
         return pattern == value, []
     elif isinstance(pattern, type):
         if isinstance(value, pattern):
@@ -39,8 +41,21 @@ def match_value(pattern, value) -> Tuple[bool, List]:
             return False, []
     elif isinstance(pattern, list):
         return match_iterable(pattern, value)
+    elif isinstance(pattern, tuple):
+        return match_iterable(pattern, value)
+    elif callable(pattern):
+        return_value = pattern(value)
+        if return_value is True:
+            return True, [value]
+        elif return_value is False:
+            pass
+        else:
+            raise MatchError("Warning! pattern function %s is not returning a boolean, but instead %s" %
+                             (pattern, return_value))
     elif pattern is _:
         return True, [value]
+    elif pattern is HEAD or pattern is TAIL:
+        raise MatchError("HEAD or TAIL should only be used inside an Iterable (list or tuple).")
     return False, []
 
 
@@ -55,6 +70,9 @@ def only_padded_values_follow(padded_pairs, i):
 
 
 def match_iterable(patterns, values) -> Tuple[bool, List]:
+    if not isinstance(patterns, Iterable) or not isinstance(values, Iterable):
+        return False, []
+
     total_extracted = []
     padded_pairs = list(zip_longest(patterns, values, fillvalue=PaddedValue))
 
@@ -71,10 +89,11 @@ def match_iterable(patterns, values) -> Tuple[bool, List]:
             # check TAIL is in the last position of the pattern, before a sequence of PaddedValues
             # TODO: infinite patterns ? maybe I should not do this.
             if not only_padded_values_follow(padded_pairs, i):
-                raise MatchError("TAIL must me in last position of a pattern.")
+                raise MatchError("TAIL must me in last position of the pattern.")
             else:
-                tail = [value for (pattern, value) in padded_pairs[i:]]
-                total_extracted += tail
+                tail = [value for (pattern, value) in padded_pairs[i:] if value is not PaddedValue]
+                # print("TAIL:", tail)
+                total_extracted.append(tail)
                 break
         else:
             matched, extracted = match_value(pattern, value)

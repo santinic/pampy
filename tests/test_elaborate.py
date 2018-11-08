@@ -1,5 +1,8 @@
 import unittest
 
+import functools
+from functools import reduce
+
 from pampy import match, REST, TAIL, HEAD, _, match_value, match_iterable
 
 
@@ -32,9 +35,7 @@ class PampyElaborateTests(unittest.TestCase):
                 [1, 2, _],      lambda x: "the list [1, 2, _]",
                 [1, 2, 4],      "the list [1, 2, 4]",   # this can never be matched
 
-                [1, [2, _], _], lambda a, b: "[1, [2, %s], %s" % (a, b),
-
-                # [1, 2, TAIL],   "the list [1, 2, TAIL]",
+                [1, [2, _], _], lambda a, b: "[1, [2, %s], %s]" % (a, b),
             )
 
         assert parser(3) == "the integer 3"
@@ -42,50 +43,37 @@ class PampyElaborateTests(unittest.TestCase):
         assert parser("ciao") == "the string ciao"
         assert parser("x") == "any string"
         assert parser({'a': 1}) == "any dictionary"
-
         assert parser([1]) == "the list [1]"
         assert parser([1, 2, 3]) == "the list [1, 2, 3]"
         assert parser([1, 2, 4]) == "the list [1, 2, _]"
-        # assert parser([1, 3, 3]) == "the list [1, _, 3]"
-        #
-        # assert parser(("hello", "world")) == "hello world"
-        #
-        # # Nesting. Testing pattern [1, [2, _], _]
-        # assert parser([1, [2, 3], 4]) == "[1, [2, 3], 4]"
+        assert parser([1, 3, 3]) == "the list [1, _, 3]"
+        assert parser(("hello", "world")) == "hello world"
+        assert parser([1, [2, 3], 4]) == "[1, [2, 3], 4]"
 
     def test_lisp(self):
-        # A Lisp interpreter in 3 lines
+        # A Lisp calculator in 5 lines
         def lisp(exp):
             return match(exp,
                 int,                lambda x: x,
-                (callable, REST),   lambda f, args: f(*[lisp(e) for e in args]),
+                callable,           lambda x: x,
+                (callable, REST),   lambda f, rest: f(*map(lisp, rest)),
+                tuple,              lambda t: list(map(lisp, t)),
             )
 
-        plus = lambda a, b: a+b
-        minus = lambda a, b: a-b
-
-        # from math import sqrt
-        # lisp((plus, 1, (minus, 3, (sqrt, 2))))
-        # lisp((list, "hello", "world"))
-
+        plus = lambda a, b: a + b
+        minus = lambda a, b: a - b
+        self.assertEqual(lisp((plus, 1, 2)), 3)
         self.assertEqual(lisp((plus, 1, (minus, 4, 2))), 3)
-
-    def test_mylen(self):
-        def mylen(l):
-            return match(l,
-                [],             0,
-                [HEAD, TAIL],   lambda head, tail: len(tail))
-
-        self.assertEqual(mylen([]), 0)
-        self.assertEqual(mylen([1]), 1)
-        self.assertEqual(mylen([1, 2, 3]), 3)
+        self.assertEqual(lisp((reduce, plus, (1, 2, 3))), 6)
 
 
-    # def myzip(a, b):
-    #     return match((a, b),
-    #         ([], []), [],
-    #         ([HEAD, TAIL], [HEAD, TAIL]),
-    #     )
+    # def test_myzip(self):
+    #     def myzip(a, b):
+    #         return match((a, b),
+    #                      ([_, TAIL], [_, TAIL]),  lambda head_a, tail_a, head_b, tail_b: []
+    #         )
+    #
+    #     self.assertEqual(myzip([1,2,3], [4, 5, 6]), [(1, 4), (2, 5), (3, 6)])
 
 
     # assert match_iterable((), ())
