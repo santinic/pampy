@@ -41,6 +41,8 @@ def match_value(pattern, value) -> Tuple[bool, List]:
         return match_iterable(pattern, value)
     elif isinstance(pattern, tuple):
         return match_iterable(pattern, value)
+    elif isinstance(pattern, dict):
+        return match_dict(pattern, value)
     elif callable(pattern):
         return_value = pattern(value)
         if return_value is True:
@@ -55,6 +57,25 @@ def match_value(pattern, value) -> Tuple[bool, List]:
     elif pattern is HEAD or pattern is TAIL:
         raise MatchError("HEAD or TAIL should only be used inside an Iterable (list or tuple).")
     return False, []
+
+
+def match_dict(pattern, value) -> Tuple[bool, List]:
+    if not isinstance(value, dict) or not isinstance(pattern, dict):
+        return False, []
+
+    total_extracted = []
+    for pkey, pval in pattern.items():
+        matched_left_and_right = False
+        for vkey, vval in value.items():
+            key_matched, key_extracted = match_value(pkey, vkey)
+            if key_matched:
+                value_matched, value_extracted = match_value(pval, vval)
+                if value_matched:
+                    total_extracted += key_extracted + value_extracted
+                    matched_left_and_right = True
+        if not matched_left_and_right:
+            return False, []
+    return True, total_extracted
 
 
 def only_padded_values_follow(padded_pairs, i):
@@ -84,13 +105,10 @@ def match_iterable(patterns, values) -> Tuple[bool, List]:
                 else:
                     total_extracted += [value]
         elif pattern is TAIL:
-            # check TAIL is in the last position of the pattern, before a sequence of PaddedValues
-            # TODO: infinite patterns ? maybe I should not do this.
             if not only_padded_values_follow(padded_pairs, i):
                 raise MatchError("TAIL must me in last position of the pattern.")
             else:
                 tail = [value for (pattern, value) in padded_pairs[i:] if value is not PaddedValue]
-                # print("TAIL:", tail)
                 total_extracted.append(tail)
                 break
         else:

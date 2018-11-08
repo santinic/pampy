@@ -48,7 +48,7 @@ class PampyElaborateTests(unittest.TestCase):
         assert parser([1, 2, 4]) == "the list [1, 2, _]"
         assert parser([1, 3, 3]) == "the list [1, _, 3]"
         assert parser(("hello", "world")) == "hello world"
-        assert parser([1, [2, 3], 4]) == "[1, [2, 3], 4]"
+        assert parser([1, [2, 3],    4]) == "[1, [2, 3], 4]"
 
     def test_lisp(self):
         # A Lisp interpreter in 5 lines
@@ -75,4 +75,35 @@ class PampyElaborateTests(unittest.TestCase):
 
         self.assertEqual(myzip([1,2,3], [4, 5, 6]), [(1, 4), (2, 5), (3, 6)])
         self.assertEqual(myzip(range(5), range(5)), list(zip(range(5), range(5))))
+
+
+    # def test_animals(self):
+    #     pets = [
+    #         { 'type': 'dog', 'pet-details': { 'name': 'carl',   'cuteness': 4   } },
+    #         { 'type': 'dog', 'pet-details': { 'name': 'john',   'cuteness': 3   } },
+    #         { 'type': 'cat', 'pet-details': { 'name': 'fuffy',  'cuty':     4.6 } },
+    #         { 'type': 'cat', 'cat-details': { 'name': 'bonney', 'cuty':     7   } },
+    #     ]
+    #
+    #     def avg_cuteness_pythonic():
+    #         cutenesses = []
+    #         for pet in pets:
+    #             if 'pog-details' in pet:
+    #                 if 'cuteness' in pet['pog-detail']:
+    #                     cutenesses.append(pet['pog-detail']['cuteness'])
+    #                 elif 'cuty' in pet['pet-details']:
+    #                     cutenesses.append(pet[''])
+    #             elif 'cat-detail' in pet:
+    #                 if 'cuty' in pet['cat-details']:
+    #                     cutenesses.append(pet[''])
+    #         return sum(cutenesses) / len(cutenesses)
+    #
+    #     def avg_cuteness_pampy():
+    #         cutenesses = []
+    #         for pet in pets:
+    #             match(pet,
+    #                 { "pet-details": { "cuteness": _ }},  lambda x: cutenesses.append(x),
+    #                 { "cat-details": { "cuty":     _ }},  lambda x: cutenesses.append(x)
+    #             )
+    #         return sum(cutenesses) / len(cutenesses)
 

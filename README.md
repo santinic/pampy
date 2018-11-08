@@ -51,11 +51,17 @@ lisp((print (+ "hello " "lisp")))      # => "hello lisp"
 
 ```python
 match(x,
-    3,          "this matches the number 3",
-    int,        "matches any integer",
-    (str, int), lambda a, b: "a (str, int) tuple used in a lambda",
-    tuple,      "any other tuple not previously specified",
-    _,          "anthing else"
+    3,              "this matches the number 3",
+
+    int,            "matches any integer",
+
+    (str, int),     lambda a, b: "a (str, int) tuple used in a lambda",
+
+    [1, 2, _],      "any list of 3 elements that begins with [1, 2]",
+
+    {'x': _},       "any dict with a key 'x' and any value associated",
+
+    _,              "anthing else"
 )
 ```
 
@@ -66,9 +72,9 @@ from pampy import match, HEAD, TAIL, _
 
 x = [1, 2, 3]
 
-match(x, [1, TAIL],     lambda tail: tail)                  # => [2, 3]
+match(x, [1, TAIL],     lambda t: t)            # => [2, 3]
 
-match(x, [HEAD, TAIL],  lambda head, tail: (head, tail))    # => (1, [2, 3])
+match(x, [HEAD, TAIL],  lambda h, t: (h, t))    # => (1, [2, 3])
 
 ```
 
@@ -81,7 +87,6 @@ x = [1, [2, 3], 4]
 
 match(x, [1, [_, 3], _], lambda a, b: [1, [a, 3], b])       # => [1, [2, 3], 4]
 ```
-
 
 ## All the thnigs you can match
 
@@ -107,6 +112,26 @@ The same goes for dictionaries.
 | `[1, 2, TAIL]` | A list that start with 1, 2 and ands with any sequence | `[1, 2, 7, 7]` | `[1, 7, 7, 7]` |
 | `[1, TAIL]` | 
 
+
+## You can nest dicts. And you can use _ as key!
+
+```python
+
+pet = { 'type': 'dog', 'details': { 'age': 3 } }
+
+match(pet, { 'details': { 'age': _ } }, lambda age: age)        # => 3
+
+# or:
+
+match(pet, { _ : { 'age': _ } },        lambda a, b: (a, b))    # => ('details', 3)
+```
+
+What about _ ordering inside nested dict ?
+It feels like putting multiple _ inside dicts shouldn't work.
+But it does because
+[Python 3.7 dict is in an OrderedDict by default](https://mail.python.org/pipermail/python-dev/2017-December/151283.html)
+
+
 <!--
 ## You can go crazy, and implement match with match itself
 ...
@@ -123,4 +148,5 @@ or
 
 or
 ```$ easy_install pampy```-->
+
 
