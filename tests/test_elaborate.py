@@ -51,7 +51,7 @@ class PampyElaborateTests(unittest.TestCase):
         assert parser([1, [2, 3], 4]) == "[1, [2, 3], 4]"
 
     def test_lisp(self):
-        # A Lisp calculator in 5 lines
+        # A Lisp interpreter in 5 lines
         def lisp(exp):
             return match(exp,
                 int,                lambda x: x,
@@ -66,26 +66,13 @@ class PampyElaborateTests(unittest.TestCase):
         self.assertEqual(lisp((plus, 1, (minus, 4, 2))), 3)
         self.assertEqual(lisp((reduce, plus, (1, 2, 3))), 6)
 
+    def test_myzip(self):
+        def myzip(a, b):
+            return match((a, b),
+                ([], []),                   [],
+                ([_, TAIL], [_, TAIL]),     lambda ha, ta, hb, tb: [(ha, hb)]+myzip(ta, tb)
+            )
 
-    # def test_myzip(self):
-    #     def myzip(a, b):
-    #         return match((a, b),
-    #                      ([_, TAIL], [_, TAIL]),  lambda head_a, tail_a, head_b, tail_b: []
-    #         )
-    #
-    #     self.assertEqual(myzip([1,2,3], [4, 5, 6]), [(1, 4), (2, 5), (3, 6)])
+        self.assertEqual(myzip([1,2,3], [4, 5, 6]), [(1, 4), (2, 5), (3, 6)])
+        self.assertEqual(myzip(range(5), range(5)), list(zip(range(5), range(5))))
 
-
-    # assert match_iterable((), ())
-    # assert match_iterable((), [])
-    #
-    # assert match(3, 3, True)
-    # assert match(_, 7, True)
-    #
-    # # assert match(True, True, True, False, False)
-    # # assert not match(False, True, True, False, False)
-
-    # # assert match([1, 2, 3], [1, TAIL], lambda x: x) == [2, 3]
-    #
-    #
-    # # assert mylen([1, 2, 3]) == 3

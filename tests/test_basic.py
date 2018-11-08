@@ -25,6 +25,12 @@ class PampyBasicTests(unittest.TestCase):
         self.assertEqual(match_value(_, 3), (True, [3]))
         self.assertEqual(match_value(_, 'ok'), (True, ['ok']))
 
+    def test_match_value_callable_pattern(self):
+        self.assertEqual(match_value(3, lambda: True), (False, []))
+
+        func = lambda x: True
+        self.assertEqual(match_value(callable, func), (True, [func]))
+
     def test_match_mylen(self):
         def mylen(l):
             return match(l,
@@ -58,8 +64,6 @@ class PampyBasicTests(unittest.TestCase):
         self.assertEqual(match([1, 2, 3], [1, _, 3], lambda x: x), 2)
         self.assertEqual(match([1, 2, 3], [1, 2, 3], lambda x: x), [1, 2, 3])
 
-    def test_match_value_callable_pattern(self):
-        self.assertEqual(match_value(3, lambda: True), (False, []))
+    def test_match_action_can_be_empty_list(self):
+        self.assertEqual(match(True, True, []), [])
 
-        func = lambda x: True
-        self.assertEqual(match_value(callable, func), (True, [func]))

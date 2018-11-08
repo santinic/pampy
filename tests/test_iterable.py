@@ -78,7 +78,6 @@ class IterableTests(unittest.TestCase):
 
     def test_match_iterable_with_tuples(self):
         def convert_to_tuples(patterns, values):
-            # print(tuple(patterns), tuple(values))
             patterns = tuple(patterns) if isinstance(patterns, Iterable) else patterns
             values = tuple(values) if isinstance(values, Iterable) else values
             return pampy.match_iterable(patterns, values)

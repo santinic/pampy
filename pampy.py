@@ -23,10 +23,8 @@ def run(action, var):
             return action(var.get())
         else:
             return action(var)
-    elif isinstance(action, ValueType):
-        return action
     else:
-        raise MatchError("Action %s is neither callable nor a value." % action)
+        return action
 
 
 def match_value(pattern, value) -> Tuple[bool, List]:
