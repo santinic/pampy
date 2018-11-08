@@ -64,7 +64,7 @@ match(x,
 ```python
 from pampy import match, HEAD, TAIL, _
 
-x = [1,2,3,4]
+x = [1, 2, 3, 4]
 
 match(x, [1, 2, TAIL], lambda tail: tail)                   # => [3, 4]
 
@@ -82,8 +82,34 @@ x = [1, [2, 3], 4]
 match(x, [1, [_, 3], _], lambda a, b: [1, [a, 3], b])       # => [1, [2, 3], 4]
 ```
 
-## You can go crazy, and implement match with match itself
 
+## All the thnigs you can match
+
+As Pattern you can use any Python type, any class, or any Python value. 
+
+Types and Classes are matched via `instanceof(value, pattern)`.
+
+`Iterable` Patterns match recursively through all their elements. 
+
+The same goes for dictionaries.
+
+| Pattern Example | What it means | Matched Example | NOT Matched Example |
+| --------------- | --------------| --------------- | ------------------- |
+| `int` | Any integer | `42` |
+| `float` | Any float number | `2.35` |
+| `str` | Any string | `"hello"` |
+| `tuple` | Any tuple | `(1, 2, 3)` |
+| `list` | Any list | `[1, 2, 3]` |
+| `MyClass` | Any instance of MyClass | `MyClass()` | 
+| `_` | Any object (even None) | 
+| `(int, int)` | A tuple made of any two integers | `(1, 2)` 
+| `[1, 2, _]`  | A list that starts with 1, 2 and ends with any value | `[1, 2, 3]` | `[1, 2, 3, 4]` |
+| `[1, 2, TAIL]` | A list that start with 1, 2 and ands with any sequence | `[1, 2, 7, 7]` | `[1, 7, 7, 7]` |
+| `[1, TAIL]` | 
+
+<!--
+## You can go crazy, and implement match with match itself
+...
 
 
 ## Install
@@ -96,5 +122,5 @@ or
 ```$ pip3 install pampy```
 
 or
-```$ easy_install pampy```
+```$ easy_install pampy```-->
 
