@@ -36,7 +36,7 @@ def fibonacci(n):
     )
 ```
 
-## You can write a Lisp interpreter in 3 lines
+## You can write a Lisp calculator in 5 lines
 
 ```python
 from pampy import match, REST, _
@@ -44,11 +44,18 @@ from pampy import match, REST, _
 def lisp(exp):
     return match(exp,
         int,                lambda x: x,
-        (callable, REST),   lambda f, rest: f(*map(lisp, rest))
+        callable,           lambda x: x,
+        (callable, REST),   lambda f, rest: f(*map(lisp, rest)),
+        tuple,              lambda t: list(map(lisp, t)),
+    )
 
-lisp((+, 1, (-, 3, (sqrt 2))))         # => 1 + (3 - sqrt(2))
-lisp((print (+ "hello " "lisp")))      # => "hello lisp"
+plus = lambda a, b: a + b
+minus = lambda a, b: a - b
+from functools import reduce
 
+lisp((plus, 1, 2))                 # => 3
+lisp((plus, 1, (minus, 4, 2)))     # => 3
+lisp((reduce, plus, (1, 2, 3))     # => 6
 ```
 
 ## You can match so many things!

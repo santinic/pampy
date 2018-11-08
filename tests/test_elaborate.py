@@ -1,6 +1,5 @@
 import unittest
 
-import functools
 from functools import reduce
 
 from pampy import match, REST, TAIL, HEAD, _, match_value, match_iterable
