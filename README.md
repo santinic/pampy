@@ -1,4 +1,4 @@
-# Pampy: Pattern Matching for Python
+# Pampy: Pattern Matching for Python
 Pampy is pretty small, pretty fast, and often makes your code more readable, and easier to reason about.
 
 ![Pampy logo](imgs/pampy.png "Pampy in Start Wars")
