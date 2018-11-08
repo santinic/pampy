@@ -1,0 +1,7 @@
+TODO:
+- Pattern can be callable functions
+X Nested list/tuple patterns
+- HEAD/TAIL
+- Lazy Generator Matching HEAD/TAIL
+- Regex pattern
+- Match dictionaries
