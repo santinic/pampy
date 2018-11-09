@@ -1,10 +1,12 @@
-![Pampy logo](imgs/pampy.png "Pampy in Start Wars")
+![Pampy in Star Wars](https://raw.githubusercontent.com/santinic/pampy/master/imgs/pampy.png "Pampy in Star Wars")
 
 # Pampy: Pattern Matching for Python
+![License MIT](https://go-shields.herokuapp.com/license-MIT-blue.png)
+
 Pampy is pretty small, pretty fast, and often makes your code more readable, and easier to reason about.
 
 <kbd>
-  <img src="imgs/slide1.png" width="700">
+  <img src="https://raw.githubusercontent.com/santinic/pampy/master/imgs/slide1.png" width="700">
 </kbd>
 
 ## You can write many patterns
@@ -110,10 +112,9 @@ match(pet, { 'details': { 'age': _ } }, lambda age: age)        # => 3
 match(pet, { _ : { 'age': _ } },        lambda a, b: (a, b))    # => ('details', 3)
 ```
 
-What about _ ordering inside nested dict ?
-It feels like putting multiple _ inside dicts shouldn't work.
+It feels like putting multiple _ inside dicts shouldn't work. Isn't ordering in dicts not guaranteed ?
 But it does because
-[Python 3.7 dict is in an OrderedDict by default](https://mail.python.org/pipermail/python-dev/2017-December/151283.html)
+[in Python 3.7, dict is an OrderedDict by default](https://mail.python.org/pipermail/python-dev/2017-December/151283.html)
 
 ## All the things you can match
 
@@ -143,19 +144,14 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 
 
 
-
-<!--
-
 ## Install
 
-It works for both python2 and python3. To install it:
+Currently it works only in Python3. To install it:
 
 ```$ pip install pampy```
 
 or
 ```$ pip3 install pampy```
 
-or
-```$ easy_install pampy```-->
 
 

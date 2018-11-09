@@ -1,0 +1,16 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+  - "nightly"
+install:
+  - "pip install coverage"
+  - "pip install python-coveralls"
+script:
+  - "python -m unittest discover -s tests"
+  - "coverage run setup.py test"
+after_success:
+    coveralls
