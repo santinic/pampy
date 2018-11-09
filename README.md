@@ -142,6 +142,20 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 | `{'type':'dog', age: int }` | Any dict with `type: "dog"` and with an `int` age | `{"type":"dog", "age": 3}` | `3` | `{"type":"dog", "age":2.3}` |
 
 
+## Using strict=False
+
+By default `match()` is strict. If no pattern matches, it raises a `MatchError`.
+
+You can prevent it using `strict=False`. In this case `match` just returns `False` if nothing matches.
+
+```python
+>>> match([1, 2], [1, 2, 3], "whatever")
+MatchError: '_' not provided. This case is not handled:
+
+>>> match([1, 2], [1, 2, 3], "whatever", strict=False)
+False
+```
+
 ## Install
 
 Currently it works only in Python > 3.6 [Because dict matching can work only in the latest Pythons](https://mail.python.org/pipermail/python-dev/2017-December/151283.html).
