@@ -143,9 +143,7 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 
 ## Install
 
-Currently it works only in Python 3 [Because dict matching can work only in the latest Pythons](https://mail.python.org/pipermail/python-dev/2017-December/151283.html).
-
-Support for Python2 is coming.
+Currently it works only in Python > 3.6 [Because dict matching can work only in the latest Pythons](https://mail.python.org/pipermail/python-dev/2017-December/151283.html).
 
 To install it:
 
