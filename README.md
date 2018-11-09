@@ -3,7 +3,7 @@
 # Pampy: Pattern Matching for Python3
 [![License MIT](https://go-shields.herokuapp.com/license-MIT-blue.png)]()
 [![Travis-CI Status](https://api.travis-ci.org/santinic/pampy.svg?branch=master)](https://travis-ci.org/santinic/pampy)
-[![Coverage Status](https://coveralls.io/repos/santinic/pampy/badge.svg?branch=master)](https://coveralls.io/r/santinic/pampy?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/santinic/pampy/badge.svg?branch=master)](https://coveralls.io/github/santinic/pampy?branch=master)
 [![PyPI version](https://badge.fury.io/py/pampy.svg)](http://badge.fury.io/py/pampy)
 
 Pampy is pretty small, pretty fast, and often makes your code more readable, and easier to reason about.
