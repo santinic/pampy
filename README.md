@@ -1,10 +1,10 @@
 ![Pampy in Star Wars](https://raw.githubusercontent.com/santinic/pampy/master/imgs/pampy.png "Pampy in Star Wars")
 
-# Pampy: Pattern Matching for Python3
+# Pampy: Pattern Matching for Python
 [![License MIT](https://go-shields.herokuapp.com/license-MIT-blue.png)]()
 [![Travis-CI Status](https://api.travis-ci.org/santinic/pampy.svg?branch=master)](https://travis-ci.org/santinic/pampy)
 [![Coverage Status](https://coveralls.io/repos/github/santinic/pampy/badge.svg?branch=master)](https://coveralls.io/github/santinic/pampy?branch=master)
-[![PyPI version](https://badge.fury.io/py/pampy.svg)](http://badge.fury.io/py/pampy)
+[![PyPI version](https://badge.fury.io/py/pampy.svg)](https://badge.fury.io/py/pampy)
 
 Pampy is pretty small, pretty fast, and often makes your code more readable, and easier to reason about.
 
@@ -87,6 +87,7 @@ match(x, [1, TAIL],     lambda t: t)            # => [2, 3]
 match(x, [HEAD, TAIL],  lambda h, t: (h, t))    # => (1, [2, 3])
 
 ```
+`TAIL` and `REST` actually mean the same thing.
 
 ## You can nest lists and tuples
 
@@ -141,9 +142,25 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 | `{'type':'dog', age: int }` | Any dict with `type: "dog"` and with an `int` age | `{"type":"dog", "age": 3}` | `3` | `{"type":"dog", "age":2.3}` |
 
 
+## Using strict=False
+
+By default `match()` is strict. If no pattern matches, it raises a `MatchError`.
+
+You can prevent it using `strict=False`. In this case `match` just returns `False` if nothing matches.
+
+```python
+>>> match([1, 2], [1, 2, 3], "whatever")
+MatchError: '_' not provided. This case is not handled:
+
+>>> match([1, 2], [1, 2, 3], "whatever", strict=False)
+False
+```
+
 ## Install
 
 Currently it works only in Python > 3.6 [Because dict matching can work only in the latest Pythons](https://mail.python.org/pipermail/python-dev/2017-December/151283.html).
+
+I'm currently working on a backport with some minor syntax changes for Python2.
 
 To install it:
 
