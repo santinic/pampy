@@ -1,7 +1,10 @@
 ![Pampy in Star Wars](https://raw.githubusercontent.com/santinic/pampy/master/imgs/pampy.png "Pampy in Star Wars")
 
-# Pampy: Pattern Matching for Python
-![License MIT](https://go-shields.herokuapp.com/license-MIT-blue.png)
+# Pampy: Pattern Matching for Python3
+[![License MIT](https://go-shields.herokuapp.com/license-MIT-blue.png)]()
+[![Travis-CI Status](https://api.travis-ci.org/santinic/pampy.svg?branch=master)](https://travis-ci.org/santinic/pampy)
+[![Coverage Status](https://coveralls.io/repos/glowdigitalmedia/dict-utils/badge.svg?branch=master)](https://coveralls.io/r/glowdigitalmedia/dict-utils?branch=master)
+[![PyPI version](https://badge.fury.io/py/pampy.svg)](http://badge.fury.io/py/pampy)
 
 Pampy is pretty small, pretty fast, and often makes your code more readable, and easier to reason about.
 
@@ -142,11 +145,13 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 | `{'type':'dog', age: _ }` | Any dict with `type: "dog"` and with an age | `{"type":"dog", "age": 3}` | `3` | `{"type":"cat", "age":2}` |
 
 
-
-
 ## Install
 
-Currently it works only in Python3. To install it:
+Currently it works only in Python 3.7 [Because dict matching can work only in the latest Pythons](https://mail.python.org/pipermail/python-dev/2017-December/151283.html).
+
+Support for Python2 is coming.
+
+To install it:
 
 ```$ pip install pampy```
 
@@ -154,4 +159,4 @@ or
 ```$ pip3 install pampy```
 
 
-
+<!--We could port it also to Python 2 but we'd need to change the dict matching syntax.-->
