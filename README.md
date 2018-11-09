@@ -9,7 +9,7 @@
 Pampy is pretty small, pretty fast, and often makes your code more readable, and easier to reason about.
 
 <kbd>
-  <img src="imgs/slide1.png" width="700">
+  <img src="https://raw.githubusercontent.com/santinic/pampy/master/imgs/slide1.png" width="700">
 </kbd>
 
 ## You can write many patterns
@@ -17,7 +17,7 @@ Pampy is pretty small, pretty fast, and often makes your code more readable, and
 Patterns are evaluated in the order they appear.
 
 <kbd>
-  <img src="imgs/slide2.png" width="700">
+  <img src="https://raw.githubusercontent.com/santinic/pampy/master/imgs/slide2.png" width="700">
 </kbd>
 
 
