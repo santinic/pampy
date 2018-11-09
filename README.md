@@ -9,22 +9,16 @@
 Pampy is pretty small, pretty fast, and often makes your code more readable, and easier to reason about.
 
 <kbd>
-  <img src="https://raw.githubusercontent.com/santinic/pampy/master/imgs/slide1.png" width="700">
+  <img src="imgs/slide1.png" width="700">
 </kbd>
 
 ## You can write many patterns
 
 Patterns are evaluated in the order they appear.
 
-```python
-from pampy import match, _
-
-match(x,
-    pattern1, action1,
-    pattern2, action2,
-    ...
-)
-```
+<kbd>
+  <img src="imgs/slide2.png" width="700">
+</kbd>
 
 
 ## You can write Fibonacci
