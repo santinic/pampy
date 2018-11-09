@@ -1,9 +1,8 @@
-import inspect
 from collections import Iterable
 from itertools import zip_longest
 from typing import Tuple, List
 
-from pampy.helpers import UnderscoreType, HeadType, TailType, BoxedArgs, PaddedValue, pairwise
+from pampy.helpers import *
 
 ValueType = (int, float, str, bool)
 _ = ANY = UnderscoreType()
@@ -17,8 +16,7 @@ def run(action, var):
             try:
                 return action(*var)
             except TypeError as err:
-                code = inspect.getsource(action)
-                raise MatchError("Error passing argument %s here:\n%s\n%s" % (var, code, err))
+                raise MatchError(get_lambda_args_error_msg(action, var, err))
         elif isinstance(var, BoxedArgs):
             return action(var.get())
         else:

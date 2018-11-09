@@ -1,3 +1,6 @@
+import inspect
+
+
 class UnderscoreType:
     def __repr__(self):
         return '_'
@@ -36,3 +39,9 @@ def pairwise(l):
         i += 2
 
 
+def get_lambda_args_error_msg(action, var, err):
+    try:
+        code = inspect.getsource(action)
+        return "Error passing arguments %s here:\n%s\n%s" % (var, code, err)
+    except OSError:
+        return "Error passing arguments %s:\n%s" % (var, err)

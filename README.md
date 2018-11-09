@@ -123,20 +123,22 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 
 `Iterable` Patterns match recursively through all their elements.  The same goes for dictionaries.
 
-| Pattern Example | What it means | Matched Example |  Passed to function | NOT Matched Example |
-| --------------- | --------------| --------------- | ------------------- | ------------------ |
-| "hello" |  only the string "hello" matches | "hello" | "hello" | "ciao"
-| `int` | Any integer | `42` | `42` |  |
-| `float` | Any float number | `2.35` | `2.35` |
-| `str` | Any string | `"hello"` | `"hello"` |
-| `tuple` | Any tuple | `(1, 2)` | `(1, 2)` |
-| `list` | Any list | `[1, 2]` |
-| `MyClass` | Any instance of MyClass | `MyClass()` |
+| Pattern Example | What it means | Matched Example |  Arguments Passed to function | NOT Matched Example |
+| --------------- | --------------| --------------- | ----------------------------- | ------------------ |
+| `"hello"` |  only the string `"hello"` matches | `"hello"` | `"hello"` | any other value |
+| `int` | Any integer | `42` | `42` | any other value |
+| `float` | Any float number | `2.35` | `2.35` | any other value |
+| `str` | Any string | `"hello"` | `"hello"` | any other value |
+| `tuple` | Any tuple | `(1, 2)` | `(1, 2)` | any other value |
+| `list` | Any list | `[1, 2]` | `[1, 2]` | any other value |
+| `MyClass` | Any instance of MyClass | `MyClass()` | that instance | any other object instance |
 | `_` | Any object (even None) | 
+| `ANY` | The same as `_` | 
 | `(int, int)` | A tuple made of any two integers | `(1, 2)` |
 | `[1, 2, _]`  | A list that starts with 1, 2 and ends with any value | `[1, 2, 3]` | `3` | `[1, 2, 3, 4]` |
 | `[1, 2, TAIL]` | A list that start with 1, 2 and ends with any sequence | `[1, 2, 3, 4]`| `[3, 4]` | `[1, 7, 7, 7]` |
 | `{'type':'dog', age: _ }` | Any dict with `type: "dog"` and with an age | `{"type":"dog", "age": 3}` | `3` | `{"type":"cat", "age":2}` |
+| `{'type':'dog', age: int }` | Any dict with `type: "dog"` and with an `int` age | `{"type":"dog", "age": 3}` | `3` | `{"type":"dog", "age":2.3}` |
 
 
 ## Install
