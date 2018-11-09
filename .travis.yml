@@ -9,6 +9,6 @@ install:
   - "pip install python-coveralls"
 script:
   - "python -m unittest discover -s tests"
-  - "coverage run setup.py test"
+  - "coverage run --omit=*.virtualenvs*,*virtualenv* -m unittest discover tests"
 after_success:
     coveralls
