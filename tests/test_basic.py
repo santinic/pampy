@@ -1,6 +1,6 @@
 import unittest
 
-from pampy import match, REST, TAIL, HEAD, _, match_value, match_iterable, MatchError
+from pampy import match_value, match, HEAD, TAIL, _, MatchError
 
 
 class PampyBasicTests(unittest.TestCase):
@@ -34,8 +34,8 @@ class PampyBasicTests(unittest.TestCase):
     def test_match_mylen(self):
         def mylen(l):
             return match(l,
-                [],             0,
-                [HEAD, TAIL],   lambda head, tail: 1 + mylen(tail))
+                         [], 0,
+                         [HEAD, TAIL], lambda head, tail: 1 + mylen(tail))
 
         self.assertEqual(mylen([]), 0)
         self.assertEqual(mylen([1]), 1)
@@ -66,4 +66,3 @@ class PampyBasicTests(unittest.TestCase):
 
     def test_match_action_can_be_empty_list(self):
         self.assertEqual(match(True, True, []), [])
-

@@ -76,6 +76,26 @@ class PampyElaborateTests(unittest.TestCase):
         self.assertEqual(myzip(range(5), range(5)), list(zip(range(5), range(5))))
 
 
+
+
+    # def test_tree_traversal(self):
+    #     class Node:
+    #         def __init__(self, name, childs):
+    #             self.name, self.childs = name, childs
+    #
+    #         def __extract__(self):
+    #             return self.name, self.childs
+    #
+    #     tree = Node(1, [Node(2), Node(3, [Node(4, [Node(5)), Node(6)])])])
+    #
+    #
+    #     def breadth_first(node):
+    #         return match(node,
+    #                      Node(_, []),       lambda name, childs: name,
+    #                      Node(_, [TAIL]),   lambda name, childs: breadth_first()
+    #         )
+
+
     # def test_animals(self):
     #     pets = [
     #         { 'type': 'dog', 'pet-details': { 'name': 'carl',   'cuteness': 4   } },
@@ -105,4 +125,5 @@ class PampyElaborateTests(unittest.TestCase):
     #                 { "cat-details": { "cuty":     _ }},  lambda x: cutenesses.append(x)
     #             )
     #         return sum(cutenesses) / len(cutenesses)
+
 

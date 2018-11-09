@@ -3,7 +3,7 @@ from collections import Iterable
 from itertools import zip_longest
 from typing import Tuple, List
 
-from helpers import UnderscoreType, HeadType, TailType, BoxedArgs, PaddedValue, pairwise
+from pampy.helpers import UnderscoreType, HeadType, TailType, BoxedArgs, PaddedValue, pairwise
 
 ValueType = (int, float, str, bool)
 _ = ANY = UnderscoreType()
