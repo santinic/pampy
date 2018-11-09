@@ -66,7 +66,7 @@ match(x,
 
     int,            "matches any integer",
 
-    (str, int),     lambda a, b: "a (str, int) tuple used in a lambda",
+    (str, int),     lambda a, b: "a tuple (a, b) you can use in a function",
 
     [1, 2, _],      "any list of 3 elements that begins with [1, 2]",
 
@@ -99,31 +99,6 @@ x = [1, [2, 3], 4]
 match(x, [1, [_, 3], _], lambda a, b: [1, [a, 3], b])       # => [1, [2, 3], 4]
 ```
 
-## All the thnigs you can match
-
-As Pattern you can use any Python type, any class, or any Python value. 
-
-Types and Classes are matched via `instanceof(value, pattern)`.
-
-`Iterable` Patterns match recursively through all their elements. 
-
-The same goes for dictionaries.
-
-| Pattern Example | What it means | Matched Example | NOT Matched Example |
-| --------------- | --------------| --------------- | ------------------- |
-| `int` | Any integer | `42` |
-| `float` | Any float number | `2.35` |
-| `str` | Any string | `"hello"` |
-| `tuple` | Any tuple | `(1, 2, 3)` |
-| `list` | Any list | `[1, 2, 3]` |
-| `MyClass` | Any instance of MyClass | `MyClass()` | 
-| `_` | Any object (even None) | 
-| `(int, int)` | A tuple made of any two integers | `(1, 2)` 
-| `[1, 2, _]`  | A list that starts with 1, 2 and ends with any value | `[1, 2, 3]` | `[1, 2, 3, 4]` |
-| `[1, 2, TAIL]` | A list that start with 1, 2 and ands with any sequence | `[1, 2, 7, 7]` | `[1, 7, 7, 7]` |
-| `[1, TAIL]` | 
-
-
 ## You can nest dicts. And you can use _ as key!
 
 ```python
@@ -140,11 +115,36 @@ It feels like putting multiple _ inside dicts shouldn't work.
 But it does because
 [Python 3.7 dict is in an OrderedDict by default](https://mail.python.org/pipermail/python-dev/2017-December/151283.html)
 
+## All the things you can match
+
+As Pattern you can use any Python type, any class, or any Python value.
+
+The operator `_` and types like `int` or `str`, extract variables that are passed to functions.
+
+Types and Classes are matched via `instanceof(value, pattern)`.
+
+`Iterable` Patterns match recursively through all their elements.  The same goes for dictionaries.
+
+| Pattern Example | What it means | Matched Example |  Passed to function | NOT Matched Example |
+| --------------- | --------------| --------------- | ------------------- | ------------------ |
+| "hello" |  only the string "hello" matches | "hello" | "hello" | "ciao"
+| `int` | Any integer | `42` | `42` |  |
+| `float` | Any float number | `2.35` | `2.35` |
+| `str` | Any string | `"hello"` | `"hello"` |
+| `tuple` | Any tuple | `(1, 2)` | `(1, 2)` |
+| `list` | Any list | `[1, 2]` |
+| `MyClass` | Any instance of MyClass | `MyClass()` |
+| `_` | Any object (even None) | 
+| `(int, int)` | A tuple made of any two integers | `(1, 2)` |
+| `[1, 2, _]`  | A list that starts with 1, 2 and ends with any value | `[1, 2, 3]` | `3` | `[1, 2, 3, 4]` |
+| `[1, 2, TAIL]` | A list that start with 1, 2 and ends with any sequence | `[1, 2, 3, 4]`| `[3, 4]` | `[1, 7, 7, 7]` |
+| `{'type':'dog', age: _ }` | Any dict with `type: "dog"` and with an age | `{"type":"dog", "age": 3}` | `3` | `{"type":"cat", "age":2}` |
+
+
+
+
 
 <!--
-## You can go crazy, and implement match with match itself
-...
-
 
 ## Install
 
