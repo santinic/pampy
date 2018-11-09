@@ -17,6 +17,12 @@ class PampyElaborateTests(unittest.TestCase):
         self.assertEqual(fib(1), 1)
         self.assertEqual(fib(7), 13)
 
+    def test_slide1(self):
+        input = [1, 2, 3]
+        pattern = [1, _, 3]
+        action = lambda x: "it's {}".format(x)
+        self.assertEqual(match(input, pattern, action), "it's 2")
+
     def test_parser(self):
         def parser(exp):
             return match(exp,

@@ -66,3 +66,10 @@ class PampyBasicTests(unittest.TestCase):
 
     def test_match_action_can_be_empty_list(self):
         self.assertEqual(match(True, True, []), [])
+
+    def test_match_raise_lambda_error(self):
+        with self.assertRaises(MatchError) as err:
+            match([1, 2, 3], [1, _, 3], lambda: "xxxxx {}".format())
+        self.assertIn('lambda', str(err.exception))
+        self.assertIn('xxxxx', str(err.exception))
+        print(err.exception)
