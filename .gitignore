@@ -103,4 +103,5 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-.idea
+.idea/
+drafts/
