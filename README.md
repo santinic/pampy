@@ -4,7 +4,7 @@
 Pampy is pretty small, pretty fast, and often makes your code more readable, and easier to reason about.
 
 <kbd>
-  <img src="imgs/slide1.png" width="600">
+  <img src="imgs/slide1.png" width="700">
 </kbd>
 
 ## You can write many patterns
