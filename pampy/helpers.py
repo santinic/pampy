@@ -34,3 +34,5 @@ def pairwise(l):
     while i < len(l):
         yield l[i], l[i + 1]
         i += 2
+
+
