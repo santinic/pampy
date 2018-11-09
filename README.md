@@ -87,6 +87,7 @@ match(x, [1, TAIL],     lambda t: t)            # => [2, 3]
 match(x, [HEAD, TAIL],  lambda h, t: (h, t))    # => (1, [2, 3])
 
 ```
+`TAIL` and `REST` actually mean the same thing.
 
 ## You can nest lists and tuples
 
