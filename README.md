@@ -117,9 +117,9 @@ But it does because
 ## You can match class hierarchies
 
 ```python
-class Pet: 			pass
-class Dog(Pet):		pass
-class Cat(Pet):		pass
+class Pet:          pass
+class Dog(Pet):     pass
+class Cat(Pet):     pass
 class Hamster(Pet): pass
 
 def what_is(x):
