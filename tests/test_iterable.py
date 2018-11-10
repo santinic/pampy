@@ -18,7 +18,6 @@ class IterableTests(unittest.TestCase):
 
         self.assertEqual(self.mi([1, 2], [1]), (False, []))
 
-
     def test_match_iterable_with_a_value(self):
         self.assertEqual(self.mi([1, 2], 33), (False, []))
         self.assertEqual(self.mi(33, [1, 2]), (False, []))
@@ -36,9 +35,9 @@ class IterableTests(unittest.TestCase):
         self.assertEqual(self.mi([1, [2, 3]], [1, [2, 3]]), (True, []))
         self.assertEqual(self.mi([1, [2, _]], [1, [2, 3]]), (True, [3]))
         self.assertEqual(self.mi([1, [2, _], _],
-                                        [1, [2, 3], 4]), (True, [3, 4]))
+                                 [1, [2, 3], 4]), (True, [3, 4]))
         self.assertEqual(self.mi([1, [2, [_, 4], _], _],
-                                        [1, [2, [3, 4], 5], 6]), (True, [3, 5, 6]))
+                                 [1, [2, [3, 4], 5], 6]), (True, [3, 5, 6]))
 
     def test_match_iterable_basic_HEAD(self):
         self.assertEqual(self.mi([HEAD], [1]),   (True, [1]))
