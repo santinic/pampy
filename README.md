@@ -114,6 +114,29 @@ It feels like putting multiple _ inside dicts shouldn't work. Isn't ordering in 
 But it does because
 [in Python 3.7, dict is an OrderedDict by default](https://mail.python.org/pipermail/python-dev/2017-December/151283.html)
 
+## You can match class hierarchies
+
+```python
+class Pet: 			pass
+class Dog(Pet):		pass
+class Cat(Pet):		pass
+class Hamster(Pet): pass
+
+def what_is(x):
+    return match(x,
+        Dog, 		'dog',
+        Cat, 		'cat',
+        Pet, 		'any other pet',
+          _, 		'this is not a pet at all',
+    )
+
+what_is(Cat()) 		# => 'cat'
+what_is(Dog()) 		# => 'dog'
+what_is(Hamster())  # => 'any other pet'
+what_is(Pet())      # => 'any other pet'
+what_is(42)       	# => 'this is not a pet at all'
+```
+
 ## All the things you can match
 
 As Pattern you can use any Python type, any class, or any Python value.
@@ -126,21 +149,21 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 
 | Pattern Example | What it means | Matched Example |  Arguments Passed to function | NOT Matched Example |
 | --------------- | --------------| --------------- | ----------------------------- | ------------------ |
-| `"hello"` |  only the string `"hello"` matches | `"hello"` | `"hello"` | any other value |
+| `"hello"` |  only the string `"hello"` matches | `"hello"` | nothing | any other value |
+| `None` | only `None` | `None` | nothing | any other value |
 | `int` | Any integer | `42` | `42` | any other value |
 | `float` | Any float number | `2.35` | `2.35` | any other value |
 | `str` | Any string | `"hello"` | `"hello"` | any other value |
 | `tuple` | Any tuple | `(1, 2)` | `(1, 2)` | any other value |
 | `list` | Any list | `[1, 2]` | `[1, 2]` | any other value |
-| `MyClass` | Any instance of MyClass | `MyClass()` | that instance | any other object instance |
-| `_` | Any object (even None) | 
-| `ANY` | The same as `_` | 
-| `(int, int)` | A tuple made of any two integers | `(1, 2)` |
+| `MyClass` | Any instance of MyClass. **And any object that extends MyClass.** | `MyClass()` | that instance | any other object |
+| `_` | Any object (even None) |  | that value | |
+| `ANY` | The same as `_` | | that value | |
+| `(int, int)` | A tuple made of any two integers | `(1, 2)` | `1` and `2` | (True, False) |
 | `[1, 2, _]`  | A list that starts with 1, 2 and ends with any value | `[1, 2, 3]` | `3` | `[1, 2, 3, 4]` |
 | `[1, 2, TAIL]` | A list that start with 1, 2 and ends with any sequence | `[1, 2, 3, 4]`| `[3, 4]` | `[1, 7, 7, 7]` |
 | `{'type':'dog', age: _ }` | Any dict with `type: "dog"` and with an age | `{"type":"dog", "age": 3}` | `3` | `{"type":"cat", "age":2}` |
 | `{'type':'dog', age: int }` | Any dict with `type: "dog"` and with an `int` age | `{"type":"dog", "age": 3}` | `3` | `{"type":"dog", "age":2.3}` |
-
 
 ## Using strict=False
 
