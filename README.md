@@ -6,7 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/santinic/pampy/badge.svg?branch=master)](https://coveralls.io/github/santinic/pampy?branch=master)
 [![PyPI version](https://badge.fury.io/py/pampy.svg)](https://badge.fury.io/py/pampy)
 
-Pampy is pretty small, pretty fast, and often makes your code more readable, and easier to reason about.
+Pampy is pretty small, reasonably fast, and often makes your code more readable, and easier to reason about.
 
 <kbd>
   <img src="https://raw.githubusercontent.com/santinic/pampy/master/imgs/slide1.png" width="700">
@@ -54,7 +54,7 @@ from functools import reduce
 
 lisp((plus, 1, 2))                 # => 3
 lisp((plus, 1, (minus, 4, 2)))     # => 3
-lisp((reduce, plus, (1, 2, 3))     # => 6
+lisp((reduce, plus, (1, 2, 3)))     # => 6
 ```
 
 ## You can match so many things!
@@ -71,7 +71,7 @@ match(x,
 
     {'x': _},       "any dict with a key 'x' and any value associated",
 
-    _,              "anthing else"
+    _,              "anything else"
 )
 ```
 

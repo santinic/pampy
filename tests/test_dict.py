@@ -23,10 +23,8 @@ class IterableTests(unittest.TestCase):
     def test_dog(self):
         pet = {'type': 'dog', 'details': {'age': 3}}
 
-        self.assertEqual(match(pet, {'details': {'age': _}},    lambda age: age),
-                         3)
-        self.assertEqual(match(pet, {_: {'age': _}},            lambda a, b: (a, b)),
-                         ('details', 3))
+        self.assertEqual(match(pet, {'details': {'age': _}},    lambda age: age),       3)
+        self.assertEqual(match(pet, {        _: {'age': _}},    lambda a, b: (a, b)),   ('details', 3))
 
     def test_exclude_previously_used_keys(self):
         x = {"a": 1, "b": 2}
@@ -56,5 +54,4 @@ class IterableTests(unittest.TestCase):
     #
     #     # I want al the names, but data is inconsistent!
     #     names = [match(row, {"type": _, _: str}, lambda type, name: name) for row in data]
-
 
