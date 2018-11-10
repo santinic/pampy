@@ -171,7 +171,7 @@ By default `match()` is strict. If no pattern matches, it raises a `MatchError`.
 
 You can prevent it using `strict=False`. In this case `match` just returns `False` if nothing matches.
 
-```python
+```
 >>> match([1, 2], [1, 2, 3], "whatever")
 MatchError: '_' not provided. This case is not handled: [1, 2]
 
