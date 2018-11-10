@@ -130,11 +130,11 @@ def what_is(x):
           _, 		'this is not a pet at all',
     )
 
-what_is(Cat()) 		  # => 'cat'
-what_is(Dog()) 		  # => 'dog'
-what_is(Hamster())  # => 'any other pet'
+what_is(Cat())      # => 'cat'
+what_is(Dog())      # => 'dog'
+what_is(Hamster())  # => 'any other pet'
 what_is(Pet())      # => 'any other pet'
-what_is(42)       	# => 'this is not a pet at all'
+what_is(42)         # => 'this is not a pet at all'
 ```
 
 ## All the things you can match
