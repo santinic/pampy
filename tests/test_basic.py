@@ -26,6 +26,14 @@ class PampyBasicTests(unittest.TestCase):
     def test_match_None(self):
         self.assertEqual(match(None, None, 'None', _, 'else'), 'None')
 
+    def test_equality_comparison_should_be_strict(self):
+        self.assertEqual(match_value(1, True), (False, []))
+        self.assertEqual(match_value(0, False), (False, []))
+        self.assertEqual(match_value(1.0, 1), (False, []))
+        self.assertEqual(match_value(0.0, 0), (False, []))
+        self.assertEqual(match_value(1.0, 1), (False, []))
+
+
     def test_match_value_var_extraction(self):
         self.assertEqual(match_value(3, 3), (True, []))
         self.assertEqual(match_value(_, 3), (True, [3]))
