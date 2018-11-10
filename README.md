@@ -54,7 +54,7 @@ from functools import reduce
 
 lisp((plus, 1, 2))                 # => 3
 lisp((plus, 1, (minus, 4, 2)))     # => 3
-lisp((reduce, plus, (1, 2, 3))     # => 6
+lisp((reduce, plus, (1, 2, 3)))     # => 6
 ```
 
 ## You can match so many things!
@@ -71,7 +71,7 @@ match(x,
 
     {'x': _},       "any dict with a key 'x' and any value associated",
 
-    _,              "anthing else"
+    _,              "anything else"
 )
 ```
 
