@@ -30,6 +30,8 @@ def match_value(pattern, value) -> Tuple[bool, List]:
         return False, []
     elif isinstance(pattern, ValueType):
         return pattern == value, []
+    elif pattern is None:
+        return value is None, []
     elif isinstance(pattern, type):
         if isinstance(value, pattern):
             return True, [value]
@@ -62,15 +64,19 @@ def match_dict(pattern, value) -> Tuple[bool, List]:
         return False, []
 
     total_extracted = []
+    still_usable_keys = set(value.keys())
     for pkey, pval in pattern.items():
         matched_left_and_right = False
         for vkey, vval in value.items():
+            if vkey not in still_usable_keys:
+                continue
             key_matched, key_extracted = match_value(pkey, vkey)
             if key_matched:
                 value_matched, value_extracted = match_value(pval, vval)
                 if value_matched:
                     total_extracted += key_extracted + value_extracted
                     matched_left_and_right = True
+                    still_usable_keys.remove(vkey)
         if not matched_left_and_right:
             return False, []
     return True, total_extracted

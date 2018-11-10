@@ -20,6 +20,12 @@ class PampyBasicTests(unittest.TestCase):
         self.assertTrue(match_value_bool(False, False))
         self.assertFalse(match_value_bool(1, 3))
 
+    def test_match_value_None(self):
+        self.assertEqual(match_value(None, None), (True, []))
+
+    def test_match_None(self):
+        self.assertEqual(match(None, None, 'None', _, 'else'), 'None')
+
     def test_match_value_var_extraction(self):
         self.assertEqual(match_value(3, 3), (True, []))
         self.assertEqual(match_value(_, 3), (True, [3]))
@@ -30,6 +36,9 @@ class PampyBasicTests(unittest.TestCase):
 
         func = lambda x: True
         self.assertEqual(match_value(callable, func), (True, [func]))
+
+    # def test_match_value_regex(self):
+    #     self.assertEqual(match_value(regex, "dog-name"), (True, ["dog"]))
 
     def test_match_mylen(self):
         def mylen(l):
@@ -72,4 +81,5 @@ class PampyBasicTests(unittest.TestCase):
             match([1, 2, 3], [1, _, 3], lambda: "xxxxx {}".format())
         self.assertIn('lambda', str(err.exception))
         self.assertIn('xxxxx', str(err.exception))
-        print(err.exception)
+        # print(err.exception)
+
