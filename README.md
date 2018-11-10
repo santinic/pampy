@@ -96,7 +96,7 @@ from pampy import match, _
 
 x = [1, [2, 3], 4]
 
-match(x, [1, [_, 3], _], lambda a, b: [1, [a, 3], b])       # => [1, [2, 3], 4]
+match(x, [1, [_, 3], _], lambda a, b: [1, [a, 3], b])           # => [1, [2, 3], 4]
 ```
 
 ## You can nest dicts. And you can use _ as key!
@@ -130,8 +130,8 @@ def what_is(x):
           _, 		'this is not a pet at all',
     )
 
-what_is(Cat()) 		# => 'cat'
-what_is(Dog()) 		# => 'dog'
+what_is(Cat()) 		  # => 'cat'
+what_is(Dog()) 		  # => 'dog'
 what_is(Hamster())  # => 'any other pet'
 what_is(Pet())      # => 'any other pet'
 what_is(42)       	# => 'this is not a pet at all'
