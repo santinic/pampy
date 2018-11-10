@@ -91,3 +91,32 @@ class PampyBasicTests(unittest.TestCase):
         self.assertIn('xxxxx', str(err.exception))
         # print(err.exception)
 
+    def test_match_child_matches_parent_class(self):
+        class Parent:
+            pass
+
+        class Child(Parent):
+            pass
+
+        self.assertEqual(match(Child(), Child, 'Child', _, 'else'), 'Child')
+        self.assertEqual(match(Child(), Parent, 'Parent', _, 'else'), 'Parent')
+
+    def test_match_class_hierarchy(self):
+        class Pet: pass
+        class Dog(Pet): pass
+        class Cat(Pet): pass
+        class Hamster(Pet): pass
+
+        def what_is(x):
+            return match(x,
+                Dog, 'dog',
+                Cat, 'cat',
+                Pet, 'any other pet',
+                _, 'this is not a pet at all',
+            )
+
+        self.assertEqual(what_is(Cat()), 'cat')
+        self.assertEqual(what_is(Dog()), 'dog')
+        self.assertEqual(what_is(Hamster()), 'any other pet')
+        self.assertEqual(what_is(Pet()), 'any other pet')
+        self.assertEqual(what_is(True), 'this is not a pet at all')
