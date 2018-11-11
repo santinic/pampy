@@ -1,4 +1,4 @@
-<!--![Pampy in Star Wars](https://raw.githubusercontent.com/santinic/pampy/master/imgs/pampy.png "Pampy in Star Wars")-->
+![Pampy in Star Wars](https://raw.githubusercontent.com/santinic/pampy/master/imgs/pampy.png "Pampy in Star Wars")
 
 # Pampy: Pattern Matching for Python
 [![License MIT](https://go-shields.herokuapp.com/license-MIT-blue.png)]()
