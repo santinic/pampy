@@ -1,5 +1,7 @@
 import unittest
 
+import re
+
 from pampy import match_value, match, HEAD, TAIL, _, MatchError
 
 
@@ -45,9 +47,6 @@ class PampyBasicTests(unittest.TestCase):
         func = lambda x: True
         self.assertEqual(match_value(callable, func), (True, [func]))
 
-    # def test_match_value_regex(self):
-    #     self.assertEqual(match_value(regex, "dog-name"), (True, ["dog"]))
-
     def test_match_mylen(self):
         def mylen(l):
             return match(l,
@@ -91,16 +90,6 @@ class PampyBasicTests(unittest.TestCase):
         self.assertIn('xxxxx', str(err.exception))
         # print(err.exception)
 
-    def test_match_child_matches_parent_class(self):
-        class Parent:
-            pass
-
-        class Child(Parent):
-            pass
-
-        self.assertEqual(match(Child(), Child, 'Child', _, 'else'), 'Child')
-        self.assertEqual(match(Child(), Parent, 'Parent', _, 'else'), 'Parent')
-
     def test_match_class_hierarchy(self):
         class Pet: pass
         class Dog(Pet): pass
@@ -120,3 +109,25 @@ class PampyBasicTests(unittest.TestCase):
         self.assertEqual(what_is(Hamster()), 'any other pet')
         self.assertEqual(what_is(Pet()), 'any other pet')
         self.assertEqual(what_is(True), 'this is not a pet at all')
+
+    def test_regex_groups(self):
+        def what_is(pet):
+            return match(pet,
+                re.compile('(\w+)-(\w+)-cat$'),     lambda name, my: 'cat '+name,
+                re.compile('(\w+)-(\w+)-dog$'),     lambda name, my: 'dog '+name,
+                _,                                  "something else"
+            )
+
+        self.assertEqual(what_is('fuffy-my-dog'), 'dog fuffy')
+        self.assertEqual(what_is('puffy-her-dog'), 'dog puffy')
+        self.assertEqual(what_is('carla-your-cat'), 'cat carla')
+        self.assertEqual(what_is('roger-my-hamster'), 'something else')
+
+    def test_regex_no_group(self):
+        def what_is(pet):
+            return match(pet,
+                re.compile('fuffy-cat$'), lambda x: 'fuffy-cat',
+                _, "something else"
+            )
+
+        self.assertEqual(what_is('my-fuffy-cat'), 'fuffy-cat')

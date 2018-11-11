@@ -1,3 +1,4 @@
 TODO:
-- Lazy Generator Matching HEAD/TAIL
-- Regex pattern
+X Pattern can be Python Regex
+* Lazy generators ?
+* Python2 and Python < 3.6

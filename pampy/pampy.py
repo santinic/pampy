@@ -1,6 +1,7 @@
 from collections import Iterable
 from itertools import zip_longest
 from typing import Tuple, List
+from typing import Pattern as RegexPattern
 
 from pampy.helpers import *
 
@@ -52,6 +53,10 @@ def match_value(pattern, value) -> Tuple[bool, List]:
         else:
             raise MatchError("Warning! pattern function %s is not returning a boolean, but instead %s" %
                              (pattern, return_value))
+    elif isinstance(pattern, RegexPattern):
+        rematch = pattern.search(value)
+        if rematch is not None:
+            return True, list(rematch.groups())
     elif pattern is _:
         return True, [value]
     elif pattern is HEAD or pattern is TAIL:

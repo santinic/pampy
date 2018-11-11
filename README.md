@@ -52,9 +52,9 @@ plus = lambda a, b: a + b
 minus = lambda a, b: a - b
 from functools import reduce
 
-lisp((plus, 1, 2))                 # => 3
-lisp((plus, 1, (minus, 4, 2)))     # => 3
-lisp((reduce, plus, (1, 2, 3)))     # => 6
+lisp((plus, 1, 2))                 	# => 3
+lisp((plus, 1, (minus, 4, 2)))     	# => 3
+lisp((reduce, plus, (1, 2, 3)))   	# => 6
 ```
 
 ## You can match so many things!
@@ -164,6 +164,7 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 | `[1, 2, TAIL]` | A list that start with 1, 2 and ends with any sequence | `[1, 2, 3, 4]`| `[3, 4]` | `[1, 7, 7, 7]` |
 | `{'type':'dog', age: _ }` | Any dict with `type: "dog"` and with an age | `{"type":"dog", "age": 3}` | `3` | `{"type":"cat", "age":2}` |
 | `{'type':'dog', age: int }` | Any dict with `type: "dog"` and with an `int` age | `{"type":"dog", "age": 3}` | `3` | `{"type":"dog", "age":2.3}` |
+| `re.compile('(\w+)-(\w+)-cat$')` | Any string that matches that regular expression expr | `"my-fuffy-cat"` | `"my"` and `"puffy"` | `"fuffy-dog"` | 
 
 ## Using strict=False
 
@@ -177,6 +178,23 @@ MatchError: '_' not provided. This case is not handled:
 
 >>> match([1, 2], [1, 2, 3], "whatever", strict=False)
 False
+```
+
+## Using Regular Expressions
+Pampy supports Python's Regex. You just need to pass a compiled regex as pattern, and Pampy is going to run `patter.search()`, and pass to the action function the result of `.groups()`.
+
+```python 
+def what_is(pet):
+    return match(pet,
+        re.compile('(\w+)-(\w+)-cat$'),     lambda name, my: 'cat '+name,
+        re.compile('(\w+)-(\w+)-dog$'),     lambda name, my: 'dog '+name,
+        _,                                  "something else"
+    )
+
+what_is('fuffy-my-dog')  		# => 'dog fuffy'
+what_is('puffy-her-dog') 		# => 'dog puffy'
+what_is('carla-your-cat') 	 	# => 'cat carla'
+what_is('roger-my-hamster') 	# => 'something else'
 ```
 
 ## Install
