@@ -69,11 +69,16 @@ def match_dict(pattern, value) -> Tuple[bool, List]:
         return False, []
 
     total_extracted = []
-    still_usable_keys = set(value.keys())
+    still_usable_value_keys = set(value.keys())
+    still_usable_pattern_keys = set(pattern.keys())
     for pkey, pval in pattern.items():
+        if pkey not in still_usable_pattern_keys:
+            continue
         matched_left_and_right = False
         for vkey, vval in value.items():
-            if vkey not in still_usable_keys:
+            if vkey not in still_usable_value_keys:
+                continue
+            if pkey not in still_usable_pattern_keys:
                 continue
             key_matched, key_extracted = match_value(pkey, vkey)
             if key_matched:
@@ -81,7 +86,8 @@ def match_dict(pattern, value) -> Tuple[bool, List]:
                 if value_matched:
                     total_extracted += key_extracted + value_extracted
                     matched_left_and_right = True
-                    still_usable_keys.remove(vkey)
+                    still_usable_pattern_keys.remove(pkey)
+                    still_usable_value_keys.remove(vkey)
         if not matched_left_and_right:
             return False, []
     return True, total_extracted

@@ -81,9 +81,6 @@ class PampyElaborateTests(unittest.TestCase):
         self.assertEqual(myzip([1,2,3], [4, 5, 6]), [(1, 4), (2, 5), (3, 6)])
         self.assertEqual(myzip(range(5), range(5)), list(zip(range(5), range(5))))
 
-
-
-
     # def test_tree_traversal(self):
     #     class Node:
     #         def __init__(self, name, childs):
