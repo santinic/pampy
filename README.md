@@ -6,7 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/santinic/pampy/badge.svg?branch=master)](https://coveralls.io/github/santinic/pampy?branch=master)
 [![PyPI version](https://badge.fury.io/py/pampy.svg)](https://badge.fury.io/py/pampy)
 
-Pampy is pretty small, reasonably fast, and often makes your code more readable, and easier to reason about.
+Pampy is pretty small (150 lines), reasonably fast, and often makes your code more readable, and easier to reason about.
 
 <kbd>
   <img src="https://raw.githubusercontent.com/santinic/pampy/master/imgs/slide1.png" width="700">
@@ -96,7 +96,7 @@ from pampy import match, _
 
 x = [1, [2, 3], 4]
 
-match(x, [1, [_, 3], _], lambda a, b: [1, [a, 3], b])       # => [1, [2, 3], 4]
+match(x, [1, [_, 3], _], lambda a, b: [1, [a, 3], b])           # => [1, [2, 3], 4]
 ```
 
 ## You can nest dicts. And you can use _ as key!
@@ -117,9 +117,9 @@ But it does because
 ## You can match class hierarchies
 
 ```python
-class Pet: 			pass
-class Dog(Pet):		pass
-class Cat(Pet):		pass
+class Pet:          pass
+class Dog(Pet):     pass
+class Cat(Pet):     pass
 class Hamster(Pet): pass
 
 def what_is(x):
@@ -130,11 +130,11 @@ def what_is(x):
           _, 		'this is not a pet at all',
     )
 
-what_is(Cat()) 		# => 'cat'
-what_is(Dog()) 		# => 'dog'
-what_is(Hamster())  # => 'any other pet'
+what_is(Cat())      # => 'cat'
+what_is(Dog())      # => 'dog'
+what_is(Hamster())  # => 'any other pet'
 what_is(Pet())      # => 'any other pet'
-what_is(42)       	# => 'this is not a pet at all'
+what_is(42)         # => 'this is not a pet at all'
 ```
 
 ## All the things you can match
@@ -172,9 +172,9 @@ By default `match()` is strict. If no pattern matches, it raises a `MatchError`.
 
 You can prevent it using `strict=False`. In this case `match` just returns `False` if nothing matches.
 
-```python
+```
 >>> match([1, 2], [1, 2, 3], "whatever")
-MatchError: '_' not provided. This case is not handled:
+MatchError: '_' not provided. This case is not handled: [1, 2]
 
 >>> match([1, 2], [1, 2, 3], "whatever", strict=False)
 False
