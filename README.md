@@ -54,7 +54,7 @@ from functools import reduce
 
 lisp((plus, 1, 2))                 	# => 3
 lisp((plus, 1, (minus, 4, 2)))     	# => 3
-lisp((reduce, plus, (1, 2, 3)))   	# => 6
+lisp((reduce, plus, (range, 10)))   # => 45
 ```
 
 ## You can match so many things!
