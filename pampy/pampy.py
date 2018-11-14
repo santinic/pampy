@@ -88,6 +88,7 @@ def match_dict(pattern, value) -> Tuple[bool, List]:
                     matched_left_and_right = True
                     still_usable_pattern_keys.remove(pkey)
                     still_usable_value_keys.remove(vkey)
+                    break
         if not matched_left_and_right:
             return False, []
     return True, total_extracted
