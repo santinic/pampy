@@ -6,7 +6,8 @@
 [![Coverage Status](https://coveralls.io/repos/github/santinic/pampy/badge.svg?branch=master)](https://coveralls.io/github/santinic/pampy?branch=master)
 [![PyPI version](https://badge.fury.io/py/pampy.svg)](https://badge.fury.io/py/pampy)
 
-Pampy is pretty small (150 lines), reasonably fast, and often makes your code more readable, and easier to reason about.
+Pampy is pretty small (150 lines), reasonably fast, and often makes your code more readable
+and hence easier to reason about.
 
 <kbd>
   <img src="https://raw.githubusercontent.com/santinic/pampy/master/imgs/slide1.png" width="700">
@@ -112,7 +113,7 @@ match(pet, { _ : { 'age': _ } },        lambda a, b: (a, b))    # => ('details',
 
 It feels like putting multiple _ inside dicts shouldn't work. Isn't ordering in dicts not guaranteed ?
 But it does because
-[in Python 3.7, dict is an OrderedDict by default](https://mail.python.org/pipermail/python-dev/2017-December/151283.html)
+[in Python 3.7, dict maintains insertion key order by default](https://mail.python.org/pipermail/python-dev/2017-December/151283.html)
 
 ## You can match class hierarchies
 
@@ -141,7 +142,7 @@ what_is(42)         # => 'this is not a pet at all'
 
 As Pattern you can use any Python type, any class, or any Python value.
 
-The operator `_` and types like `int` or `str`, extract variables that are passed to functions.
+The operator `_` and built-in types like `int` or `str`, extract variables that are passed to functions.
 
 Types and Classes are matched via `instanceof(value, pattern)`.
 
