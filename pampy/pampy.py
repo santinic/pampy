@@ -30,7 +30,9 @@ def match_value(pattern, value) -> Tuple[bool, List]:
     if value is PaddedValue:
         return False, []
     elif isinstance(pattern, ValueType):
-        return pattern is value, []
+        eq = pattern == value
+        type_eq = type(pattern) == type(value)
+        return eq and type_eq, []
     elif pattern is None:
         return value is None, []
     elif isinstance(pattern, type):

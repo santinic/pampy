@@ -28,12 +28,20 @@ class PampyBasicTests(unittest.TestCase):
     def test_match_None(self):
         self.assertEqual(match(None, None, 'None', _, 'else'), 'None')
 
-    def test_equality_comparison_should_be_strict(self):
+    def test_equality_comparison_should_not_be_strict(self):
         self.assertEqual(match_value(1, True), (False, []))
         self.assertEqual(match_value(0, False), (False, []))
         self.assertEqual(match_value(1.0, 1), (False, []))
         self.assertEqual(match_value(0.0, 0), (False, []))
         self.assertEqual(match_value(1.0, 1), (False, []))
+
+    def test_match_value_is_vs_equal(self):
+        a = 'x' * 1000000
+        b = 'x' * 1000000
+        self.assertEqual(a, b)
+        self.assertFalse(a is b)
+        self.assertEqual(match_value(a, b), (True, []))
+        self.assertEqual(match(a, b, True), True)
 
     def test_match_value_var_extraction(self):
         self.assertEqual(match_value(3, 3), (True, []))
@@ -130,3 +138,4 @@ class PampyBasicTests(unittest.TestCase):
             )
 
         self.assertEqual(what_is('my-fuffy-cat'), 'fuffy-cat')
+
