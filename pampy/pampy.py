@@ -9,6 +9,7 @@ ValueType = (int, float, str, bool)
 _ = ANY = UnderscoreType()
 HEAD = HeadType()
 REST = TAIL = TailType()
+__registered_patterns = []
 
 
 def run(action, var):
@@ -26,7 +27,24 @@ def run(action, var):
         return action
 
 
+def register_pattern(pattern):
+    __registered_patterns.append(pattern)
+
+
+def try_match_registered_patterns(pattern, value):
+    for reg_pattern in __registered_patterns:
+        res = reg_pattern(pattern, value)
+
+        if res[0]:
+            return res
+
+    return False, []
+
+
 def match_value(pattern, value) -> Tuple[bool, List]:
+    reg_patterns = try_match_registered_patterns(pattern, value)
+    if reg_patterns[0]:
+        return reg_patterns[0], reg_patterns[1]
     if value is PaddedValue:
         return False, []
     elif isinstance(pattern, ValueType):
