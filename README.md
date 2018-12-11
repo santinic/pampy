@@ -13,6 +13,12 @@ and hence easier to reason about.
   <img src="https://raw.githubusercontent.com/santinic/pampy/master/imgs/slide1.png" width="700">
 </kbd>
 
+## Demo
+
+Try `pampy` interactively in this online demo:
+
+[![](https://cdn-images-1.medium.com/max/1600/1*cI91DR6og9iF06hBrHKINg.png)](http://notebooks.rmotr.com/demo/gh/martinzugnoni/pampy)
+
 ## You can write many patterns
 
 Patterns are evaluated in the order they appear.
