@@ -82,6 +82,22 @@ class PampyElaborateTests(unittest.TestCase):
         self.assertEqual(myzip([1,2,3], [4, 5, 6]), [(1, 4), (2, 5), (3, 6)])
         self.assertEqual(myzip(range(5), range(5)), list(zip(range(5), range(5))))
 
+    def test_lambda_cond(self):
+        cond = lambda x: x < 10
+        self.assertEqual(match(3, cond, "action", _, "else"), "action")
+        self.assertEqual(match(11, cond, "action1", _, "else"), "else")
+
+    def test_lambda_cond_arg_passing(self):
+        def f(x):
+            return match(x,
+                lambda x: x % 2 == 0, lambda x: "even %d" % x,
+                lambda x: x % 2 != 0, lambda x: "odd %d" % x
+            )
+        self.assertEqual(f(3), "odd 3")
+        self.assertEqual(f(18), "even 18")
+        self.assertEqual(f(18), "even 18")
+
+
     # def test_tree_traversal(self):
     #     class Node:
     #         def __init__(self, name, childs):
