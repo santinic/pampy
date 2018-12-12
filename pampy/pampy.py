@@ -40,9 +40,7 @@ def match_value(pattern, value) -> Tuple[bool, List]:
             return True, [value]
         else:
             return False, []
-    elif isinstance(pattern, list):
-        return match_iterable(pattern, value)
-    elif isinstance(pattern, tuple):
+    elif isinstance(pattern, (list, tuple,)):
         return match_iterable(pattern, value)
     elif isinstance(pattern, dict):
         return match_dict(pattern, value)
