@@ -115,7 +115,7 @@ def match_iterable(patterns, values) -> Tuple[bool, List]:
 
     for i, (pattern, value) in enumerate(padded_pairs):
         if pattern is HEAD:
-            if i is not 0:
+            if i != 0:
                 raise MatchError("HEAD can only be in first position of a pattern.")
             else:
                 if value is PaddedValue:
