@@ -116,3 +116,44 @@ class PampyElaborateTests(unittest.TestCase):
             return sum(cutenesses) / len(cutenesses)
 
         self.assertEqual(avg_cuteness_pampy(), (4 + 3 + 4.6 + 7) / 4)
+
+    def test_advanced_lambda(self):
+        def either(pattern1, pattern2):
+            """Matches values satisfying pattern1 OR pattern2"""
+            def repack(*args):
+                return True, list(args)
+
+            def f(x):
+                return match(x,
+                     pattern1, repack,
+                     pattern2, repack,
+                     _,        (False, [])
+                )
+
+            return f
+
+        self.assertEqual(match('str', either(int, str), 'success'), 'success')
+
+    def test_dataclasses(self):
+        try:
+            from dataclasses import dataclass
+        except ImportError:
+            return
+
+        @dataclass
+        class Point:
+            x: float
+            y: float
+
+        def f(x):
+            return match(x,
+                Point(1, 2), '1',
+                Point(_, 2), str,
+                Point(1, _), str,
+                Point(_, _), lambda a, b: str(a + b)
+            )
+
+        self.assertEqual(f(Point(1, 2)), '1')
+        self.assertEqual(f(Point(2, 2)), '2')
+        self.assertEqual(f(Point(1, 3)), '3')
+        self.assertEqual(f(Point(2, 3)), '5')

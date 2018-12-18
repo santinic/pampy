@@ -49,8 +49,11 @@ def match_value(pattern, value) -> Tuple[bool, List]:
             return True, [value]
         elif return_value is False:
             pass
+        elif match_value((True, list), return_value)[0] is True:
+            return return_value
         else:
-            raise MatchError("Warning! pattern function %s is not returning a boolean, but instead %s" %
+            raise MatchError("Warning! pattern function %s is not returning a boolean "
+                             "nor a tuple of (boolean, list), but instead %s" %
                              (pattern, return_value))
     elif isinstance(pattern, RegexPattern):
         rematch = pattern.search(value)
