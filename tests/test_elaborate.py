@@ -2,6 +2,8 @@ import unittest
 
 from functools import reduce
 
+from dataclasses import dataclass
+
 from pampy import match, REST, TAIL, HEAD, _, match_value, match_iterable
 
 
@@ -96,6 +98,25 @@ class PampyElaborateTests(unittest.TestCase):
         self.assertEqual(f(3), "odd 3")
         self.assertEqual(f(18), "even 18")
         self.assertEqual(f(18), "even 18")
+
+    def test_dataclasses(self):
+        @dataclass
+        class Point:
+            x: float
+            y: float
+
+        def f(x):
+            return match(x,
+                Point(1, 2), '1',
+                Point(_, 2), str,
+                Point(1, _), str,
+                Point(_, _), lambda a, b: str(a + b)
+            )
+
+        self.assertEqual(f(Point(1, 2)), '1')
+        self.assertEqual(f(Point(2, 2)), '2')
+        self.assertEqual(f(Point(1, 3)), '3')
+        self.assertEqual(f(Point(2, 3)), '5')
 
 
     # def test_tree_traversal(self):
