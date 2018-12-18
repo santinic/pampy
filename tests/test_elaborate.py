@@ -97,6 +97,30 @@ class PampyElaborateTests(unittest.TestCase):
         self.assertEqual(f(18), "even 18")
         self.assertEqual(f(18), "even 18")
 
+    def test_dataclasses(self):
+        try:
+            from dataclasses import dataclass
+        except ImportError:
+            return
+
+        @dataclass
+        class Point:
+            x: float
+            y: float
+
+        def f(x):
+            return match(x,
+                Point(1, 2), '1',
+                Point(_, 2), str,
+                Point(1, _), str,
+                Point(_, _), lambda a, b: str(a + b)
+            )
+
+        self.assertEqual(f(Point(1, 2)), '1')
+        self.assertEqual(f(Point(2, 2)), '2')
+        self.assertEqual(f(Point(1, 3)), '3')
+        self.assertEqual(f(Point(2, 3)), '5')
+
 
     # def test_tree_traversal(self):
     #     class Node:

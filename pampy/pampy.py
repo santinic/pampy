@@ -63,6 +63,8 @@ def match_value(pattern, value) -> Tuple[bool, List]:
         return True, [value]
     elif pattern is HEAD or pattern is TAIL:
         raise MatchError("HEAD or TAIL should only be used inside an Iterable (list or tuple).")
+    elif is_dataclass(pattern):
+        return match_dict(pattern.__dict__, value.__dict__)
     return False, []
 
 

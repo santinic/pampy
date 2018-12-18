@@ -166,6 +166,7 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 | `{'type':'dog', age: _ }` | Any dict with `type: "dog"` and with an age | `{"type":"dog", "age": 3}` | `3` | `{"type":"cat", "age":2}` |
 | `{'type':'dog', age: int }` | Any dict with `type: "dog"` and with an `int` age | `{"type":"dog", "age": 3}` | `3` | `{"type":"dog", "age":2.3}` |
 | `re.compile('(\w+)-(\w+)-cat$')` | Any string that matches that regular expression expr | `"my-fuffy-cat"` | `"my"` and `"puffy"` | `"fuffy-dog"` | 
+| `Pet(name=_, age=7)` | Any Pet dataclass with `age == 7` | `Pet('rover', 7)` | `['rover']` | `Pet('rover', 8)` |
 
 ## Using strict=False
 
@@ -196,6 +197,22 @@ what_is('fuffy-my-dog')     # => 'dog fuffy'
 what_is('puffy-her-dog')    # => 'dog puffy'
 what_is('carla-your-cat')   # => 'cat carla'
 what_is('roger-my-hamster') # => 'something else'
+```
+
+## Using Dataclasses
+Pampy supports Python 3.7 dataclasses. You can pass the operator `_` as arguments and it will match those fields.
+
+```python
+@dataclass
+class Pet:
+    name: str
+    age: int
+
+pet = Pet('rover', 7)
+
+match(pet, Pet('rover', _), lambda age: age)                    # => 7
+match(pet, Pet(_, 7), lambda name: name)                        # => 'rover'
+match(pet, Pet(_, _), lambda name, age: (name, age))            # => ('rover', 7)
 ```
 
 ## Install
