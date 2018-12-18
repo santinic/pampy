@@ -2,8 +2,6 @@ import unittest
 
 from functools import reduce
 
-from dataclasses import dataclass
-
 from pampy import match, REST, TAIL, HEAD, _, match_value, match_iterable
 
 
@@ -100,6 +98,11 @@ class PampyElaborateTests(unittest.TestCase):
         self.assertEqual(f(18), "even 18")
 
     def test_dataclasses(self):
+        try:
+            from dataclasses import dataclass
+        except ImportError:
+            return
+
         @dataclass
         class Point:
             x: float
