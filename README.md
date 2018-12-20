@@ -219,8 +219,6 @@ match(pet, Pet(_, _), lambda name, age: (name, age))            # => ('rover', 7
 
 Currently it works only in Python >= 3.6 [Because dict matching can work only in the latest Pythons](https://mail.python.org/pipermail/python-dev/2017-December/151283.html).
 
-I'm currently working on a backport with some minor syntax changes for Python2.
-
 To install it:
 
 ```$ pip install pampy```
