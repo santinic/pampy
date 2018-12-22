@@ -168,17 +168,17 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 | `re.compile('(\w+)-(\w+)-cat$')` | Any string that matches that regular expression expr | `"my-fuffy-cat"` | `"my"` and `"puffy"` | `"fuffy-dog"` | 
 | `Pet(name=_, age=7)` | Any Pet dataclass with `age == 7` | `Pet('rover', 7)` | `['rover']` | `Pet('rover', 8)` |
 
-## Using strict=False
+## Using default
 
 By default `match()` is strict. If no pattern matches, it raises a `MatchError`.
 
-You can prevent it using `strict=False`. In this case `match` just returns `False` if nothing matches.
+You can instead provide a fallback value using `default` to be used when nothing matches.
 
 ```
 >>> match([1, 2], [1, 2, 3], "whatever")
 MatchError: '_' not provided. This case is not handled: [1, 2]
 
->>> match([1, 2], [1, 2, 3], "whatever", strict=False)
+>>> match([1, 2], [1, 2, 3], "whatever", default=False)
 False
 ```
 
