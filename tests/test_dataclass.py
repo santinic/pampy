@@ -1,13 +1,16 @@
 import unittest
+import pytest
+import sys
 
 from pampy import match, _
-from dataclasses import dataclass
 
 
 class PampyDataClassesTests(unittest.TestCase):
 
-
+    @pytest.mark.skipif(sys.version_info < (3, 7),
+                        reason="requires python3.7 or higher")
     def test_match_dataclasses(self):
+        from dataclasses import dataclass
         @dataclass
         class Cat:
             name: str
