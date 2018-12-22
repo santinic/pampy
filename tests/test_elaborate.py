@@ -1,4 +1,5 @@
 import unittest
+from datetime import datetime
 
 from functools import reduce
 
@@ -123,8 +124,8 @@ class PampyElaborateTests(unittest.TestCase):
             def repack(*args):
                 return True, list(args)
 
-            def f(x):
-                return match(x,
+            def f(var):
+                return match(var,
                      pattern1, repack,
                      pattern2, repack,
                      _,        (False, [])
@@ -133,6 +134,37 @@ class PampyElaborateTests(unittest.TestCase):
             return f
 
         self.assertEqual(match('str', either(int, str), 'success'), 'success')
+
+        def datetime_p(year: int, month: int, day: int, hour: int = 0, minute: int = 0, second: int = 0):
+            """Matches a datetime with these values"""
+            def f(var: datetime):
+                if not isinstance(var, datetime):
+                    return False, []
+
+                args = []
+                for pattern, actual in [(year, var.year), (month, var.month), (day, var.day),
+                                        (hour, var.hour), (minute, var.minute), (second, var.second)]:
+                    if pattern is _:
+                        args.append(actual)
+                    elif pattern != actual:
+                        return False, []
+
+                return True, args
+
+            return f
+
+        def test(var):
+            return match(var,
+                datetime_p(2018, 12, 23), 'full match',
+                datetime_p(2018, _, _), lambda month, day: f'{month}/{day} in 2018',
+                datetime_p(_, _, _, _, _, _), 'any datetime',
+                _, 'not a datetime'
+            )
+
+        self.assertEqual(test(datetime(2018, 12, 23)), 'full match')
+        self.assertEqual(test(datetime(2018, 1, 2)), '1/2 in 2018')
+        self.assertEqual(test(datetime(2017, 1, 2, 3, 4, 5)), 'any datetime')
+        self.assertEqual(test(11), 'not a datetime')
 
     def test_dataclasses(self):
         try:
@@ -145,7 +177,7 @@ class PampyElaborateTests(unittest.TestCase):
             x: float
             y: float
 
-        def f(x):
+        def test(x):
             return match(x,
                 Point(1, 2), '1',
                 Point(_, 2), str,
@@ -153,7 +185,7 @@ class PampyElaborateTests(unittest.TestCase):
                 Point(_, _), lambda a, b: str(a + b)
             )
 
-        self.assertEqual(f(Point(1, 2)), '1')
-        self.assertEqual(f(Point(2, 2)), '2')
-        self.assertEqual(f(Point(1, 3)), '3')
-        self.assertEqual(f(Point(2, 3)), '5')
+        self.assertEqual(test(Point(1, 2)), '1')
+        self.assertEqual(test(Point(2, 2)), '2')
+        self.assertEqual(test(Point(1, 3)), '3')
+        self.assertEqual(test(Point(2, 3)), '5')
