@@ -1,16 +1,39 @@
 import unittest
-import pytest
-import sys
 
 from pampy import match, _
 
 
 class PampyDataClassesTests(unittest.TestCase):
 
-    @pytest.mark.skipif(sys.version_info < (3, 7),
-                        reason="requires python3.7 or higher")
-    def test_match_dataclasses(self):
-        from dataclasses import dataclass
+    def test_dataclasses(self):
+        try:
+            from dataclasses import dataclass
+        except ImportError:
+            return
+
+        @dataclass
+        class Point:
+            x: float
+            y: float
+
+        def f(x):
+            return match(x,
+                         Point(1, 2), '1',
+                         Point(_, 2), str,
+                         Point(1, _), str,
+                         Point(_, _), lambda a, b: str(a + b)
+                         )
+
+        self.assertEqual(f(Point(1, 2)), '1')
+        self.assertEqual(f(Point(2, 2)), '2')
+        self.assertEqual(f(Point(1, 3)), '3')
+        self.assertEqual(f(Point(2, 3)), '5')
+
+    def test_different_dataclasses(self):
+        try:
+            from dataclasses import dataclass
+        except ImportError:
+            return
         @dataclass
         class Cat:
             name: str
@@ -33,3 +56,4 @@ class PampyDataClassesTests(unittest.TestCase):
         self.assertEqual(what_is(Cat("cat", 1)), 'a cat')
         self.assertEqual(what_is(Dog("", 0)), 'good boy')
         self.assertEqual(what_is(Dog("", 1)), 'doggy!')
+
