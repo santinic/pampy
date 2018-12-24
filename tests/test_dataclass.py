@@ -1,14 +1,15 @@
 import unittest
-import pytest
 import sys
 
 from pampy import match, _
 
 
 class PampyDataClassesTests(unittest.TestCase):
-    @pytest.mark.skipif(sys.version_info < (3, 7))
     def test_dataclasses(self):
-        from dataclasses import dataclass
+        try:
+            from dataclasses import dataclass
+        except ImportError:
+            return
 
         @dataclass
         class Point:
@@ -28,9 +29,11 @@ class PampyDataClassesTests(unittest.TestCase):
         self.assertEqual(f(Point(1, 3)), '3')
         self.assertEqual(f(Point(2, 3)), '5')
 
-    @pytest.mark.skipif(sys.version_info < (3, 7))
     def test_different_dataclasses(self):
-        from dataclasses import dataclass
+        try:
+            from dataclasses import dataclass
+        except ImportError:
+            return
 
         @dataclass
         class Cat:
