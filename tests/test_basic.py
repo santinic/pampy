@@ -83,6 +83,10 @@ class PampyBasicTests(unittest.TestCase):
     def test_match_not_strict_returns_false(self):
         self.assertFalse(match(3, 2, True, strict=False))
 
+    def test_match_default(self):
+        self.assertFalse(match(3, 2, True, default=False))
+        self.assertEqual(match(3, 2, True, default=6), 6)
+
     def test_match_arguments_passing(self):
         self.assertEqual(match([1, 2, 3], [1, _, 3], lambda x: x), 2)
         self.assertEqual(match([1, 2, 3], [1, 2, 3], lambda x: x), [1, 2, 3])
