@@ -215,9 +215,9 @@ what_is('carla-your-cat')   # => 'cat carla'
 what_is('roger-my-hamster') # => 'something else'
 ```
 
-## Install
+## Install for Python3
 
-Currently it works only in Python >= 3.6 [Because dict matching can work only in the latest Pythons](https://mail.python.org/pipermail/python-dev/2017-December/151283.html).
+Pampy works in Python >= 3.6 [Because dict matching can work only in the latest Pythons](https://mail.python.org/pipermail/python-dev/2017-December/151283.html).
 
 To install it:
 
@@ -226,5 +226,12 @@ To install it:
 or
 ```$ pip3 install pampy```
 
+## If you really must to use Python2
+Pampy is Python3-first, but you can use most of its features in Python2 via [this backport](https://pypi.org/project/backports.pampy/) by Manuel Barkhau:
 
-<!--We could port it also to Python 2 but we'd need to change the dict matching syntax.-->
+```pip install backports.pampy```
+
+```python
+from backports.pampy import match, HEAD, TAIL, _
+```
+
