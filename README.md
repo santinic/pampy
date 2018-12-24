@@ -138,6 +138,22 @@ what_is(Pet())      # => 'any other pet'
 what_is(42)         # => 'this is not a pet at all'
 ```
 
+## Using Dataclasses
+Pampy supports Python 3.7 dataclasses. You can pass the operator `_` as arguments and it will match those fields.
+
+```python
+@dataclass
+class Pet:
+    name: str
+    age: int
+
+pet = Pet('rover', 7)
+
+match(pet, Pet('rover', _), lambda age: age)                    # => 7
+match(pet, Pet(_, 7), lambda name: name)                        # => 'rover'
+match(pet, Pet(_, _), lambda name, age: (name, age))            # => ('rover', 7)
+```
+
 ## All the things you can match
 
 As Pattern you can use any Python type, any class, or any Python value.
@@ -197,22 +213,6 @@ what_is('fuffy-my-dog')     # => 'dog fuffy'
 what_is('puffy-her-dog')    # => 'dog puffy'
 what_is('carla-your-cat')   # => 'cat carla'
 what_is('roger-my-hamster') # => 'something else'
-```
-
-## Using Dataclasses
-Pampy supports Python 3.7 dataclasses. You can pass the operator `_` as arguments and it will match those fields.
-
-```python
-@dataclass
-class Pet:
-    name: str
-    age: int
-
-pet = Pet('rover', 7)
-
-match(pet, Pet('rover', _), lambda age: age)                    # => 7
-match(pet, Pet(_, 7), lambda name: name)                        # => 'rover'
-match(pet, Pet(_, _), lambda name, age: (name, age))            # => ('rover', 7)
 ```
 
 ## Install
