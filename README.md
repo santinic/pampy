@@ -138,6 +138,22 @@ what_is(Pet())      # => 'any other pet'
 what_is(42)         # => 'this is not a pet at all'
 ```
 
+## Using Dataclasses
+Pampy supports Python 3.7 dataclasses. You can pass the operator `_` as arguments and it will match those fields.
+
+```python
+@dataclass
+class Pet:
+    name: str
+    age: int
+
+pet = Pet('rover', 7)
+
+match(pet, Pet('rover', _), lambda age: age)                    # => 7
+match(pet, Pet(_, 7), lambda name: name)                        # => 'rover'
+match(pet, Pet(_, _), lambda name, age: (name, age))            # => ('rover', 7)
+```
+
 ## All the things you can match
 
 As Pattern you can use any Python type, any class, or any Python value.
@@ -168,17 +184,17 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 | `re.compile('(\w+)-(\w+)-cat$')` | Any string that matches that regular expression expr | `"my-fuffy-cat"` | `"my"` and `"puffy"` | `"fuffy-dog"` | 
 | `Pet(name=_, age=7)` | Any Pet dataclass with `age == 7` | `Pet('rover', 7)` | `['rover']` | `Pet('rover', 8)` |
 
-## Using strict=False
+## Using default
 
 By default `match()` is strict. If no pattern matches, it raises a `MatchError`.
 
-You can prevent it using `strict=False`. In this case `match` just returns `False` if nothing matches.
+You can instead provide a fallback value using `default` to be used when nothing matches.
 
 ```
 >>> match([1, 2], [1, 2, 3], "whatever")
 MatchError: '_' not provided. This case is not handled: [1, 2]
 
->>> match([1, 2], [1, 2, 3], "whatever", strict=False)
+>>> match([1, 2], [1, 2, 3], "whatever", default=False)
 False
 ```
 
@@ -199,25 +215,9 @@ what_is('carla-your-cat')   # => 'cat carla'
 what_is('roger-my-hamster') # => 'something else'
 ```
 
-## Using Dataclasses
-Pampy supports Python 3.7 dataclasses. You can pass the operator `_` as arguments and it will match those fields.
+## Install for Python3
 
-```python
-@dataclass
-class Pet:
-    name: str
-    age: int
-
-pet = Pet('rover', 7)
-
-match(pet, Pet('rover', _), lambda age: age)                    # => 7
-match(pet, Pet(_, 7), lambda name: name)                        # => 'rover'
-match(pet, Pet(_, _), lambda name, age: (name, age))            # => ('rover', 7)
-```
-
-## Install
-
-Currently it works only in Python >= 3.6 [Because dict matching can work only in the latest Pythons](https://mail.python.org/pipermail/python-dev/2017-December/151283.html).
+Pampy works in Python >= 3.6 [Because dict matching can work only in the latest Pythons](https://mail.python.org/pipermail/python-dev/2017-December/151283.html).
 
 To install it:
 
@@ -226,5 +226,12 @@ To install it:
 or
 ```$ pip3 install pampy```
 
+## If you really must to use Python2
+Pampy is Python3-first, but you can use most of its features in Python2 via [this backport](https://pypi.org/project/backports.pampy/) by Manuel Barkhau:
 
-<!--We could port it also to Python 2 but we'd need to change the dict matching syntax.-->
+```pip install backports.pampy```
+
+```python
+from backports.pampy import match, HEAD, TAIL, _
+```
+

@@ -21,6 +21,12 @@ class PaddedValueType:
         return 'PaddedValue'
 
 
+class NoDefaultType:
+    pass
+
+
+NoDefault = NoDefaultType()
+
 PaddedValue = PaddedValueType()
 
 

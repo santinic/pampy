@@ -5,7 +5,6 @@ from typing import Pattern as RegexPattern
 
 from pampy.helpers import *
 
-ValueType = (int, float, str, bool)
 _ = ANY = UnderscoreType()
 HEAD = HeadType()
 REST = TAIL = TailType()
@@ -29,7 +28,7 @@ def run(action, var):
 def match_value(pattern, value) -> Tuple[bool, List]:
     if value is PaddedValue:
         return False, []
-    elif isinstance(pattern, ValueType):
+    elif isinstance(pattern, (int, float, str, bool)):
         eq = pattern == value
         type_eq = type(pattern) == type(value)
         return eq and type_eq, []
@@ -40,9 +39,7 @@ def match_value(pattern, value) -> Tuple[bool, List]:
             return True, [value]
         else:
             return False, []
-    elif isinstance(pattern, list):
-        return match_iterable(pattern, value)
-    elif isinstance(pattern, tuple):
+    elif isinstance(pattern, (list, tuple)):
         return match_iterable(pattern, value)
     elif isinstance(pattern, dict):
         return match_dict(pattern, value)
@@ -63,7 +60,7 @@ def match_value(pattern, value) -> Tuple[bool, List]:
         return True, [value]
     elif pattern is HEAD or pattern is TAIL:
         raise MatchError("HEAD or TAIL should only be used inside an Iterable (list or tuple).")
-    elif is_dataclass(pattern):
+    elif is_dataclass(pattern) and pattern.__class__ == value.__class__:
         return match_dict(pattern.__dict__, value.__dict__)
     return False, []
 
@@ -140,9 +137,39 @@ def match_iterable(patterns, values) -> Tuple[bool, List]:
     return True, total_extracted
 
 
-def match(var, *args, strict=True):
+
+
+
+def match(var, *args, default=NoDefault, strict=True):
+    """
+    Match `var` against a number of potential patterns.
+
+    Example usage:
+    ```
+    match(x,
+        3,              "this matches the number 3",
+        int,            "matches any integer",
+        (str, int),     lambda a, b: "a tuple (a, b) you can use in a function",
+        [1, 2, _],      "any list of 3 elements that begins with [1, 2]",
+        {'x': _},       "any dict with a key 'x' and any value associated",
+        _,              "anything else"
+    )
+    ```
+
+    :param var: The variable to test patterns against.
+    :param args: Alternating patterns and actions. There must be an action for every pattern specified.
+                 Patterns can take many forms, see README.md for examples.
+                 Actions can be either a literal value or a callable which will be called with the arguments that were
+                    matched in corresponding pattern.
+    :param default: If `default` is specified then it will be returned if none of the patterns match.
+                    If `default` is unspecified then a `MatchError` will be thrown instead.
+    :return: The result of the action which corresponds to the first matching pattern.
+    """
     if len(args) % 2 != 0:
         raise MatchError("Every guard must have an action.")
+
+    if default is NoDefault and strict is False:
+        default = False
 
     pairs = list(pairwise(args))
     patterns = [patt for (patt, action) in pairs]
@@ -154,11 +181,11 @@ def match(var, *args, strict=True):
             lambda_args = args if len(args) > 0 else BoxedArgs(var)
             return run(action, lambda_args)
 
-    if strict:
+    if default is NoDefault:
         if _ not in patterns:
             raise MatchError("'_' not provided. This case is not handled:\n%s" % str(var))
     else:
-        return False
+        return default
 
 
 class MatchError(Exception):
