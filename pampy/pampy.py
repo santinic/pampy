@@ -34,6 +34,16 @@ def match_value(pattern, value) -> Tuple[bool, List]:
         return eq and type_eq, []
     elif pattern is None:
         return value is None, []
+    elif is_dataclass(pattern) and (pattern.__class__ == value.__class__):
+        return match_dict(pattern.__dict__, value.__dict__)
+    elif is_dataclass(pattern) and isinstance(value, dict) and (not inspect.isclass(pattern)):
+        return match_dict(pattern.__dict__, value)
+    elif is_dataclass(pattern) and isinstance(value, dict) and inspect.isclass(pattern):
+        matched, _ = match_dict(pattern.__annotations__, value)
+        if matched:
+            return True, [value]
+        else:
+            return False, []
     elif isinstance(pattern, type):
         if isinstance(value, pattern):
             return True, [value]
@@ -56,12 +66,10 @@ def match_value(pattern, value) -> Tuple[bool, List]:
         rematch = pattern.search(value)
         if rematch is not None:
             return True, list(rematch.groups())
-    elif pattern is _:
+    elif pattern is ANY:
         return True, [value]
     elif pattern is HEAD or pattern is TAIL:
         raise MatchError("HEAD or TAIL should only be used inside an Iterable (list or tuple).")
-    elif is_dataclass(pattern) and pattern.__class__ == value.__class__:
-        return match_dict(pattern.__dict__, value.__dict__)
     return False, []
 
 
