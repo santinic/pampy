@@ -165,27 +165,3 @@ class PampyElaborateTests(unittest.TestCase):
         self.assertEqual(test(datetime(2018, 1, 2)), '1/2 in 2018')
         self.assertEqual(test(datetime(2017, 1, 2, 3, 4, 5)), 'any datetime')
         self.assertEqual(test(11), 'not a datetime')
-
-    def test_dataclasses(self):
-        try:
-            from dataclasses import dataclass
-        except ImportError:
-            return
-
-        @dataclass
-        class Point:
-            x: float
-            y: float
-
-        def test(x):
-            return match(x,
-                Point(1, 2), '1',
-                Point(_, 2), str,
-                Point(1, _), str,
-                Point(_, _), lambda a, b: str(a + b)
-            )
-
-        self.assertEqual(test(Point(1, 2)), '1')
-        self.assertEqual(test(Point(2, 2)), '2')
-        self.assertEqual(test(Point(1, 3)), '3')
-        self.assertEqual(test(Point(2, 3)), '5')
