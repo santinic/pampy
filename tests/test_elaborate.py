@@ -1,4 +1,5 @@
 import unittest
+from datetime import datetime
 
 from functools import reduce
 
@@ -116,3 +117,51 @@ class PampyElaborateTests(unittest.TestCase):
             return sum(cutenesses) / len(cutenesses)
 
         self.assertEqual(avg_cuteness_pampy(), (4 + 3 + 4.6 + 7) / 4)
+
+    def test_advanced_lambda(self):
+        def either(pattern1, pattern2):
+            """Matches values satisfying pattern1 OR pattern2"""
+            def repack(*args):
+                return True, list(args)
+
+            def f(var):
+                return match(var,
+                     pattern1, repack,
+                     pattern2, repack,
+                     _,        (False, [])
+                )
+
+            return f
+
+        self.assertEqual(match('str', either(int, str), 'success'), 'success')
+
+        def datetime_p(year: int, month: int, day: int, hour: int = 0, minute: int = 0, second: int = 0):
+            """Matches a datetime with these values"""
+            def f(var: datetime):
+                if not isinstance(var, datetime):
+                    return False, []
+
+                args = []
+                for pattern, actual in [(year, var.year), (month, var.month), (day, var.day),
+                                        (hour, var.hour), (minute, var.minute), (second, var.second)]:
+                    if pattern is _:
+                        args.append(actual)
+                    elif pattern != actual:
+                        return False, []
+
+                return True, args
+
+            return f
+
+        def test(var):
+            return match(var,
+                datetime_p(2018, 12, 23), 'full match',
+                datetime_p(2018, _, _), lambda month, day: f'{month}/{day} in 2018',
+                datetime_p(_, _, _, _, _, _), 'any datetime',
+                _, 'not a datetime'
+            )
+
+        self.assertEqual(test(datetime(2018, 12, 23)), 'full match')
+        self.assertEqual(test(datetime(2018, 1, 2)), '1/2 in 2018')
+        self.assertEqual(test(datetime(2017, 1, 2, 3, 4, 5)), 'any datetime')
+        self.assertEqual(test(11), 'not a datetime')

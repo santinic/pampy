@@ -37,20 +37,21 @@ def match_value(pattern, value) -> Tuple[bool, List]:
     elif isinstance(pattern, type):
         if isinstance(value, pattern):
             return True, [value]
-        else:
-            return False, []
     elif isinstance(pattern, (list, tuple)):
         return match_iterable(pattern, value)
     elif isinstance(pattern, dict):
         return match_dict(pattern, value)
     elif callable(pattern):
         return_value = pattern(value)
-        if return_value is True:
-            return True, [value]
-        elif return_value is False:
-            pass
+
+        if isinstance(return_value, bool):
+            return return_value, [value]
+        elif isinstance(return_value, tuple) and len(return_value) == 2 \
+                and isinstance(return_value[0], bool) and isinstance(return_value[1], list):
+            return return_value
         else:
-            raise MatchError("Warning! pattern function %s is not returning a boolean, but instead %s" %
+            raise MatchError("Warning! pattern function %s is not returning a boolean "
+                             "nor a tuple of (boolean, list), but instead %s" %
                              (pattern, return_value))
     elif isinstance(pattern, RegexPattern):
         rematch = pattern.search(value)
