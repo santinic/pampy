@@ -226,7 +226,7 @@ To install it:
 or
 ```$ pip3 install pampy```
 
-## If you really must to use Python2
+## If you really must use Python2
 Pampy is Python3-first, but you can use most of its features in Python2 via [this backport](https://pypi.org/project/backports.pampy/) by Manuel Barkhau:
 
 ```pip install backports.pampy```
