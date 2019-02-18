@@ -1,5 +1,6 @@
 from collections import Iterable
 from itertools import zip_longest
+from enum import Enum
 from typing import Tuple, List
 from typing import Pattern as RegexPattern
 
@@ -28,7 +29,7 @@ def run(action, var):
 def match_value(pattern, value) -> Tuple[bool, List]:
     if value is PaddedValue:
         return False, []
-    elif isinstance(pattern, (int, float, str, bool)):
+    elif isinstance(pattern, (int, float, str, bool, Enum)):
         eq = pattern == value
         type_eq = type(pattern) == type(value)
         return eq and type_eq, []
