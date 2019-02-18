@@ -1,5 +1,5 @@
 import unittest
-
+from enum import Enum
 import re
 
 from pampy import match_value, match, HEAD, TAIL, _, MatchError
@@ -143,3 +143,13 @@ class PampyBasicTests(unittest.TestCase):
 
         self.assertEqual(what_is('my-fuffy-cat'), 'fuffy-cat')
 
+    def test_match_enum(self):
+        class Color(Enum):
+            RED = 1
+            GREEN = 2
+            BLUE = 3
+
+        self.assertEqual(match(Color.RED, Color.BLUE, "blue", Color.RED, "red", _, "else"), "red")
+        self.assertEqual(match(Color.RED, Color.BLUE, "blue", Color.GREEN, "green", _, "else"), "else")
+        self.assertEqual(match(1, Color.BLUE, "blue", Color.GREEN, "green", _, "else"), "else")
+        
