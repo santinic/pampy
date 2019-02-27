@@ -1,5 +1,5 @@
 import unittest
-
+from enum import Enum
 import re
 
 from pampy import match_value, match, HEAD, TAIL, _, MatchError
@@ -83,6 +83,10 @@ class PampyBasicTests(unittest.TestCase):
     def test_match_not_strict_returns_false(self):
         self.assertFalse(match(3, 2, True, strict=False))
 
+    def test_match_default(self):
+        self.assertFalse(match(3, 2, True, default=False))
+        self.assertEqual(match(3, 2, True, default=6), 6)
+
     def test_match_arguments_passing(self):
         self.assertEqual(match([1, 2, 3], [1, _, 3], lambda x: x), 2)
         self.assertEqual(match([1, 2, 3], [1, 2, 3], lambda x: x), [1, 2, 3])
@@ -139,3 +143,13 @@ class PampyBasicTests(unittest.TestCase):
 
         self.assertEqual(what_is('my-fuffy-cat'), 'fuffy-cat')
 
+    def test_match_enum(self):
+        class Color(Enum):
+            RED = 1
+            GREEN = 2
+            BLUE = 3
+
+        self.assertEqual(match(Color.RED, Color.BLUE, "blue", Color.RED, "red", _, "else"), "red")
+        self.assertEqual(match(Color.RED, Color.BLUE, "blue", Color.GREEN, "green", _, "else"), "else")
+        self.assertEqual(match(1, Color.BLUE, "blue", Color.GREEN, "green", _, "else"), "else")
+        
