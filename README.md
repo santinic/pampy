@@ -17,7 +17,7 @@ and hence easier to reason about. [There is also a JavaScript version, called Pa
 
 Try `pampy` interactively in this online demo:
 
-[![](https://cdn-images-1.medium.com/max/1600/1*cI91DR6og9iF06hBrHKINg.png)](http://notebooks.rmotr.com/demo/gh/martinzugnoni/pampy)
+[![](https://cdn-images-1.medium.com/max/1600/1*cI91DR6og9iF06hBrHKINg.png)](https://notebooks.ai/demo/gh/santinic/pampy)
 
 ## You can write many patterns
 
