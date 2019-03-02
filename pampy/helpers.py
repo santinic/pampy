@@ -1,4 +1,9 @@
 import inspect
+from typing import (
+    GenericMeta,
+    Union,
+    Any,
+)
 
 
 class UnderscoreType:
@@ -62,3 +67,19 @@ def is_dataclass(value):
         return is_dataclass(value)
     except ImportError:
         return False
+
+
+def is_newtype(pattern):
+    return inspect.isfunction(pattern) and hasattr(pattern, '__supertype__')
+
+
+def is_generic(pattern):
+    return isinstance(pattern, GenericMeta)
+
+
+def is_union(pattern):
+    return isinstance(pattern, Union.__class__)
+
+
+def is_typing_stuff(pattern):
+    return pattern == Any or is_generic(pattern) or is_union(pattern) or is_newtype(pattern)

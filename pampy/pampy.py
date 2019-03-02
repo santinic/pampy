@@ -1,8 +1,11 @@
 from collections import Iterable
 from itertools import zip_longest
 from enum import Enum
-from typing import Tuple, List
-from typing import Pattern as RegexPattern
+from typing import (
+    Tuple,
+    List,
+    Pattern as RegexPattern,
+)
 
 from pampy.helpers import *
 
@@ -29,6 +32,8 @@ def run(action, var):
 def match_value(pattern, value) -> Tuple[bool, List]:
     if value is PaddedValue:
         return False, []
+    elif is_typing_stuff(pattern):
+        return match_typing_stuff(pattern, value)
     elif isinstance(pattern, (int, float, str, bool, Enum)):
         eq = pattern == value
         type_eq = type(pattern) == type(value)
@@ -139,7 +144,26 @@ def match_iterable(patterns, values) -> Tuple[bool, List]:
     return True, total_extracted
 
 
+def match_typing_stuff(pattern, value) -> Tuple[bool, List]:
+    if pattern == Any:
+        return match_value(ANY, value)
+    elif is_union(pattern):
+        for subpattern in pattern.__args__:
+            is_matched, extracted = match_value(subpattern, value)
+            if is_matched:
+                return True, extracted
+        else:
+            return False, []
+    elif is_newtype(pattern):
+        return match_value(pattern.__supertype__, value)
+    elif is_generic(pattern):
+        return match_generic(pattern, value)
+    else:
+        return False, []
 
+
+def match_generic(pattern, value) -> Tuple[bool, List]:
+    pass
 
 
 def match(var, *args, default=NoDefault, strict=True):
