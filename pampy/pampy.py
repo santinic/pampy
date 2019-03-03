@@ -2,13 +2,20 @@ from collections import Iterable
 from itertools import zip_longest
 from enum import Enum
 from typing import (
+    Generic,
+    TypeVar,
     Tuple,
     List,
     Pattern as RegexPattern,
+    Callable,
+    Type,
+    NewType
 )
+import inspect
 
 from pampy.helpers import *
 
+T = TypeVar('T')
 _ = ANY = UnderscoreType()
 HEAD = HeadType()
 REST = TAIL = TailType()
@@ -162,8 +169,20 @@ def match_typing_stuff(pattern, value) -> Tuple[bool, List]:
         return False, []
 
 
-def match_generic(pattern, value) -> Tuple[bool, List]:
-    pass
+def match_generic(pattern: Generic[T], value) -> Tuple[bool, List]:
+    if pattern.__extra__ == type:       # Type[int] for example
+        if not inspect.isclass(value):
+            return False, []
+        type_ = pattern.__args__[0]
+        if inspect.isfunction(type_):   # NewType case
+            pass
+
+    elif isinstance(pattern, Callable.__class__):
+        if callable(value):
+            spec = inspect.getfullargspec(value)
+
+        else:
+            return False, []
 
 
 def match(var, *args, default=NoDefault, strict=True):
