@@ -1,5 +1,6 @@
 import unittest
 from typing import (
+    Callable,
     List,
     Any,
     Union,
@@ -46,9 +47,45 @@ class PampyTypingTests(unittest.TestCase):
         lol = NewType("lol", int)
         kek = NewType("kek", lol)
 
+        class A:
+            pass
+
+        class B(A):
+            pass
+
+        class C(A):
+            pass
+
+        E = NewType("E", B)
+
         self.assertEqual(match_value(Type[int], int), (True, [int]))
         self.assertEqual(match_value(Type[int], 1), (False, []))
+        self.assertEqual(match_value(Type[E], "cat"), (False, []))
+        self.assertEqual(match_value(Type[A], "cat"), (False, []))
 
-        self.assertEqual(match_value(Type[lol], lol), (True, [lol]))
-        self.assertEqual(match_value(Type[int], lol), (True, [lol]))
-        self.assertEqual(match_value(Type[lol], int), (False, []))
+        self.assertEqual(match_value(Type[lol], int), (True, [int]))
+        self.assertEqual(match_value(Type[kek], int), (True, [int]))
+        self.assertEqual(match_value(Type[kek], str), (False, []))
+
+        self.assertEqual(match_value(Type[A], A), (True, [A]))
+        self.assertEqual(match_value(Type[A], B), (True, [B]))
+        self.assertEqual(match_value(Type[B], C), (False, []))
+        self.assertEqual(match_value(Type[E], B), (True, [B]))
+        self.assertEqual(match_value(Type[E], C), (False, []))
+        self.assertEqual(match_value(Type[C], A), (False, []))
+
+    def test_match_callable(self):
+
+        def a_1(a: int) -> float:
+            pass
+
+        self.assertEqual(match_value(Callable[[int], float], a_1), (True, [a_1]))
+
+    def test_match_tuple(self):
+        pass
+
+    def test_match_named_tuple(self):
+        pass
+
+    def test_match_collection(self):
+        pass

@@ -83,3 +83,10 @@ def is_union(pattern):
 
 def is_typing_stuff(pattern):
     return pattern == Any or is_generic(pattern) or is_union(pattern) or is_newtype(pattern)
+
+
+def get_real_type(subtype):
+    if is_newtype(subtype):
+        return get_real_type(subtype.__supertype__)
+    else:
+        return subtype

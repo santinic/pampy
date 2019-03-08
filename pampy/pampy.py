@@ -6,6 +6,7 @@ from typing import (
     TypeVar,
     Tuple,
     List,
+    Collection,
     Pattern as RegexPattern,
     Callable,
     Type,
@@ -173,14 +174,26 @@ def match_generic(pattern: Generic[T], value) -> Tuple[bool, List]:
     if pattern.__extra__ == type:       # Type[int] for example
         if not inspect.isclass(value):
             return False, []
+
         type_ = pattern.__args__[0]
-        if inspect.isfunction(type_):   # NewType case
-            pass
+        if is_newtype(type_):   # NewType case
+            type_ = get_real_type(type_)
+
+        if issubclass(value, type_):
+            return True, [value]
+        else:
+            return False, []
 
     elif isinstance(pattern, Callable.__class__):
         if callable(value):
             spec = inspect.getfullargspec(value)
-
+            annotations = spec.annotations
+            artgtypes = [annotations.get(arg, Any) for arg in spec.args]
+            ret_type = annotations.get('return', Any)
+            if pattern == Callable[[*artgtypes], ret_type]:
+                return True, [value]
+            else:
+                return False, []
         else:
             return False, []
 
