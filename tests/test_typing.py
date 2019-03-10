@@ -4,6 +4,8 @@ from typing import (
     List,
     Set,
     FrozenSet,
+    Mapping,
+    Iterable,
     Dict,
     Any,
     Union,
@@ -30,6 +32,9 @@ class B(A):
 class C(A):
     pass
 
+
+class Z:
+    pass
 
 E = NewType("E", B)
 lol = NewType("lol", int)
@@ -95,6 +100,10 @@ class PampyTypingTests(unittest.TestCase):
 
         self.assertEqual(match_value(Type[E], C), (False, []))
         self.assertEqual(match_value(Type[C], A), (False, []))
+
+        self.assertEqual(match_value(Type[Any], A), (True, [A]))
+        self.assertEqual(match_value(Type[Any], Z), (True, [Z]))
+        self.assertEqual(match_value(Type[Any], int), (True, [int]))
 
     def test_match_callable(self):
         self.assertEqual(match_value(Callable[[int], float], annotated), (True, [annotated]))
@@ -172,9 +181,11 @@ class PampyTypingTests(unittest.TestCase):
 
     def test_match_mapping(self):
         self.assertEqual(match_value(Dict[str, int], {"a": 1, "b": 2}), (True, [{"a": 1, "b": 2}]))
+        self.assertEqual(match_value(Mapping[str, lol], {"a": 1, "b": 2}), (True, [{"a": 1, "b": 2}]))
         self.assertEqual(match_value(Dict[str, lol], {"a": 1, "b": 2}), (True, [{"a": 1, "b": 2}]))
         self.assertEqual(match_value(Dict[str, int], {"a": 1.0, "b": 2.0}), (False, []))
         self.assertEqual(match_value(Dict[str, int], {1: 1, 2: 2}), (False, []))
+        self.assertEqual(match_value(Mapping[str, int], {1: 1, 2: 2}), (False, []))
         self.assertEqual(match_value(Dict[Union[str, int], int], {1: 1, 2: 2}), (True, [{1: 1, 2: 2}]))
         self.assertEqual(match_value(Dict[Union[str, lol], int], {1: 1, 2: 2}), (True, [{1: 1, 2: 2}]))
         self.assertEqual(
@@ -184,8 +195,12 @@ class PampyTypingTests(unittest.TestCase):
 
     def test_match_iterable(self):
         self.assertEqual(match_value(List[int], [1, 2, 3]), (True, [[1, 2, 3]]))
+        self.assertEqual(match_value(List[int], range(10)), (False, []))
+        self.assertEqual(match_value(Iterable[int], [1, 2, 3]), (True, [[1, 2, 3]]))
+        self.assertEqual(match_value(Iterable[int], range(10)), (True, [range(10)]))
         self.assertEqual(match_value(List[lol], [1, 2, 3]), (True, [[1, 2, 3]]))
         self.assertEqual(match_value(List[str], [1, 2, 3]), (False, []))
+        self.assertEqual(match_value(Iterable[str], [1, 2, 3]), (False, []))
         a_vals = [B(), C(), B()]
         self.assertEqual(match_value(List[A], a_vals), (True, [a_vals]))
         self.assertEqual(match_value(List[str], ["lol", "kek"]), (True, [["lol", "kek"]]))

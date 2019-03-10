@@ -197,6 +197,8 @@ def match_generic(pattern: Generic[T], value) -> Tuple[bool, List]:
             return False, []
 
         type_ = pattern.__args__[0]
+        if type_ == Any:
+            return True, [real_value or value]
         if is_newtype(type_):   # NewType case
             type_ = get_real_type(type_)
 
