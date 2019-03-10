@@ -1,20 +1,37 @@
-from collections import Iterable
+from collections import (
+    Iterable,
+    Mapping,
+)
 from itertools import zip_longest
 from enum import Enum
 from typing import (
+    Any,
     Generic,
     TypeVar,
     Tuple,
     List,
-    Collection,
     Pattern as RegexPattern,
     Callable,
-    Type,
-    NewType
 )
 import inspect
 
-from pampy.helpers import *
+from pampy.helpers import (
+    UnderscoreType,
+    HeadType,
+    TailType,
+    get_lambda_args_error_msg,
+    BoxedArgs,
+    PaddedValue,
+    NoDefault,
+    is_typing_stuff,
+    is_dataclass,
+    is_generic,
+    is_newtype,
+    is_union,
+    pairwise,
+    peek,
+    get_real_type,
+)
 
 T = TypeVar('T')
 _ = ANY = UnderscoreType()
@@ -172,6 +189,10 @@ def match_typing_stuff(pattern, value) -> Tuple[bool, List]:
 
 def match_generic(pattern: Generic[T], value) -> Tuple[bool, List]:
     if pattern.__extra__ == type:       # Type[int] for example
+        real_value = None
+        if is_newtype(value):
+            real_value = value
+            value = get_real_type(value)
         if not inspect.isclass(value):
             return False, []
 
@@ -180,7 +201,7 @@ def match_generic(pattern: Generic[T], value) -> Tuple[bool, List]:
             type_ = get_real_type(type_)
 
         if issubclass(value, type_):
-            return True, [value]
+            return True, [real_value or value]
         else:
             return False, []
 
@@ -196,6 +217,40 @@ def match_generic(pattern: Generic[T], value) -> Tuple[bool, List]:
                 return False, []
         else:
             return False, []
+
+    elif isinstance(pattern, Tuple.__class__):
+        return match_value(pattern.__args__, value)
+
+    elif issubclass(pattern.__extra__, Mapping):
+        type_matched, _captured = match_value(pattern.__extra__, value)
+        if not type_matched:
+            return False, []
+        k_type, v_type = pattern.__args__
+
+        key_example = peek(value)
+        key_matched, _captured = match_value(k_type, key_example)
+        if not key_matched:
+            return False, []
+
+        value_matched, _captured = match_value(v_type, value[key_example])
+        if not value_matched:
+            return False, []
+        else:
+            return True, [value]
+
+    elif issubclass(pattern.__extra__, Iterable):
+        type_matched, _captured = match_value(pattern.__extra__, value)
+        if not type_matched:
+            return False, []
+        v_type, = pattern.__args__
+        v = peek(value)
+        value_matched, _captured = match_value(v_type, v)
+        if not value_matched:
+            return False, []
+        else:
+            return True, [value]
+    else:
+        return False, []
 
 
 def match(var, *args, default=NoDefault, strict=True):

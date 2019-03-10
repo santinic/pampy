@@ -3,7 +3,11 @@ from typing import (
     GenericMeta,
     Union,
     Any,
+    Iterable,
+    TypeVar,
 )
+
+T = TypeVar("T")
 
 
 class UnderscoreType:
@@ -67,6 +71,10 @@ def is_dataclass(value):
         return is_dataclass(value)
     except ImportError:
         return False
+
+
+def peek(iter_: Iterable[T]) -> T:
+    return next(iter(iter_))
 
 
 def is_newtype(pattern):
