@@ -1,6 +1,7 @@
-from collections import (
+from collections.abc import (
     Iterable,
     Mapping,
+    Callable as ACallable,
 )
 from itertools import zip_longest
 from enum import Enum
@@ -31,6 +32,7 @@ from pampy.helpers import (
     pairwise,
     peek,
     get_real_type,
+    get_extra,
 )
 
 T = TypeVar('T')
@@ -188,7 +190,7 @@ def match_typing_stuff(pattern, value) -> Tuple[bool, List]:
 
 
 def match_generic(pattern: Generic[T], value) -> Tuple[bool, List]:
-    if pattern.__extra__ == type:       # Type[int] for example
+    if get_extra(pattern) == type:       # Type[int] for example
         real_value = None
         if is_newtype(value):
             real_value = value
@@ -207,7 +209,7 @@ def match_generic(pattern: Generic[T], value) -> Tuple[bool, List]:
         else:
             return False, []
 
-    elif isinstance(pattern, Callable.__class__):
+    elif get_extra(pattern) == ACallable:
         if callable(value):
             spec = inspect.getfullargspec(value)
             annotations = spec.annotations
@@ -220,11 +222,11 @@ def match_generic(pattern: Generic[T], value) -> Tuple[bool, List]:
         else:
             return False, []
 
-    elif isinstance(pattern, Tuple.__class__):
+    elif get_extra(pattern) == tuple:
         return match_value(pattern.__args__, value)
 
-    elif issubclass(pattern.__extra__, Mapping):
-        type_matched, _captured = match_value(pattern.__extra__, value)
+    elif issubclass(get_extra(pattern), Mapping):
+        type_matched, _captured = match_value(get_extra(pattern), value)
         if not type_matched:
             return False, []
         k_type, v_type = pattern.__args__
@@ -240,8 +242,8 @@ def match_generic(pattern: Generic[T], value) -> Tuple[bool, List]:
         else:
             return True, [value]
 
-    elif issubclass(pattern.__extra__, Iterable):
-        type_matched, _captured = match_value(pattern.__extra__, value)
+    elif issubclass(get_extra(pattern), Iterable):
+        type_matched, _captured = match_value(get_extra(pattern), value)
         if not type_matched:
             return False, []
         v_type, = pattern.__args__

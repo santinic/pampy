@@ -1,11 +1,15 @@
 import inspect
 from typing import (
-    GenericMeta,
     Union,
     Any,
     Iterable,
     TypeVar,
 )
+
+try:
+    from typing import GenericMeta
+except ImportError:
+    from typing import _GenericAlias as GenericMeta
 
 T = TypeVar("T")
 
@@ -73,6 +77,10 @@ def is_dataclass(value):
         return False
 
 
+def get_extra(pattern):
+    return getattr(pattern, "__extra__", None) or getattr(pattern, "__origin__", None)
+
+
 def peek(iter_: Iterable[T]) -> T:
     return next(iter(iter_))
 
@@ -86,7 +94,7 @@ def is_generic(pattern):
 
 
 def is_union(pattern):
-    return isinstance(pattern, Union.__class__)
+    return isinstance(pattern, Union.__class__) or getattr(pattern, "__origin__", None) == Union
 
 
 def is_typing_stuff(pattern):
