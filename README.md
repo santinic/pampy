@@ -154,6 +154,45 @@ match(pet, Pet(_, 7), lambda name: name)                        # => 'rover'
 match(pet, Pet(_, _), lambda name, age: (name, age))            # => ('rover', 7)
 ```
 
+## Using typing
+Pampy supports typing annotations
+
+```python
+
+class Pet:          pass
+class Dog(Pet):     pass
+class Cat(Pet):     pass
+class Hamster(Pet): pass
+
+timestamp = NewType("year", Union[int, float])
+
+def annotated(a: Tuple[int, float], b: str, c: E) -> timestamp:
+    pass
+
+match((1, 2), Tuple[int, int], lambda a, b: (a, b))             # => (1, 2)
+match(1, Union[str, int], lambda x: x)                          # => 1
+match('a', Union[str, int], lambda x: x)                        # => 'a'
+match('a', Optional[str], lambda x: x)                          # => 'a'
+match(None, Optional[str], lambda x: x)                         # => None
+match(Pet, Type[Pet], lambda x: x)                              # => Pet
+match(Cat, Type[Pet], lambda x: x)                              # => Cat
+match(Dog, Any, lambda x: x)                                    # => Dog
+match(15, timestamp, lambda x: x)                               # => 15
+match(10.0, timestamp, lambda x: x)                             # => 10.0
+match([1, 2, 3], List[int], lambda x: x)                        # => [1, 2, 3]
+match({'a': 1, 'b': 2}, Dict[str, int], lambda x: x)            # => {'a': 1, 'b': 2}
+match(annotated, 
+    Callable[[Tuple[int, float], str, Pet], timestamp], lambda x: x
+)                                                               # => annotated
+```
+For iterable generics actual type of value is guessed based on the first element. 
+```python
+match([1, 2, 3], List[int], lambda x: x)                        # => [1, 2, 3]
+match([1, "b", "a"], List[int], lambda x: x)                    # => [1, "b", "a"]
+match(["a", "b", "c"], List[int], lambda x: x)                  # raises MatchError
+```
+For Callable any arg without annotation treated as Any. TypeVar is not supported.
+
 ## All the things you can match
 
 As Pattern you can use any Python type, any class, or any Python value.
@@ -183,6 +222,11 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 | `{'type':'dog', age: int }` | Any dict with `type: "dog"` and with an `int` age | `{"type":"dog", "age": 3}` | `3` | `{"type":"dog", "age":2.3}` |
 | `re.compile('(\w+)-(\w+)-cat$')` | Any string that matches that regular expression expr | `"my-fuffy-cat"` | `"my"` and `"puffy"` | `"fuffy-dog"` | 
 | `Pet(name=_, age=7)` | Any Pet dataclass with `age == 7` | `Pet('rover', 7)` | `['rover']` | `Pet('rover', 8)` |
+| `Any` | The same as `_` | | that value | |
+| `Union[int, float, None]` | Any integer or float number or None | `2.35` | `2.35` | any other value |
+| `Optional[int]` | The same as `Union[int, None]` | `2` | `2` | any other value |
+| `Type[MyClass]` | Any subclass of MyClass. **And any class that extends MyClass.** | `MyClass` | that class | any other object |
+
 
 ## Using default
 
