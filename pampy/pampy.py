@@ -1,4 +1,4 @@
-from collections import Iterable
+from collections.abc import Iterable
 from itertools import zip_longest
 from enum import Enum
 from typing import Tuple, List
