@@ -152,4 +152,9 @@ class PampyBasicTests(unittest.TestCase):
         self.assertEqual(match(Color.RED, Color.BLUE, "blue", Color.RED, "red", _, "else"), "red")
         self.assertEqual(match(Color.RED, Color.BLUE, "blue", Color.GREEN, "green", _, "else"), "else")
         self.assertEqual(match(1, Color.BLUE, "blue", Color.GREEN, "green", _, "else"), "else")
-        
+
+    def test_match_no_run(self):
+        self.assertEqual(match(2, 2, lambda: 0, run_callable=False)(), 0)
+        def fn():
+            return "xyz"
+        self.assertEqual(match(2, 2, fn, run_callable=False), fn)
