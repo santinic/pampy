@@ -142,7 +142,7 @@ def match_iterable(patterns, values) -> Tuple[bool, List]:
 
 
 
-def match(var, *args, default=NoDefault, strict=True):
+def match(var, *args, default=NoDefault, strict=True, run_callable=True):
     """
     Match `var` against a number of potential patterns.
 
@@ -181,7 +181,7 @@ def match(var, *args, default=NoDefault, strict=True):
 
         if matched_as_value:
             lambda_args = args if len(args) > 0 else BoxedArgs(var)
-            return run(action, lambda_args)
+            return run(action, lambda_args) if run_callable else action
 
     if default is NoDefault:
         if _ not in patterns:
