@@ -1,11 +1,41 @@
-from collections.abc import Iterable
+from collections.abc import (
+    Iterable,
+    Mapping,
+    Callable as ACallable,
+)
 from itertools import zip_longest
 from enum import Enum
-from typing import Tuple, List
-from typing import Pattern as RegexPattern
+from typing import (
+    Any,
+    Generic,
+    TypeVar,
+    Tuple,
+    List,
+    Pattern as RegexPattern,
+    Callable,
+)
+import inspect
 
-from pampy.helpers import *
+from pampy.helpers import (
+    UnderscoreType,
+    HeadType,
+    TailType,
+    get_lambda_args_error_msg,
+    BoxedArgs,
+    PaddedValue,
+    NoDefault,
+    is_typing_stuff,
+    is_dataclass,
+    is_generic,
+    is_newtype,
+    is_union,
+    pairwise,
+    peek,
+    get_real_type,
+    get_extra,
+)
 
+T = TypeVar('T')
 _ = ANY = UnderscoreType()
 HEAD = HeadType()
 REST = TAIL = TailType()
@@ -29,6 +59,8 @@ def run(action, var):
 def match_value(pattern, value) -> Tuple[bool, List]:
     if value is PaddedValue:
         return False, []
+    elif is_typing_stuff(pattern):
+        return match_typing_stuff(pattern, value)
     elif isinstance(pattern, (int, float, str, bool, Enum)):
         eq = pattern == value
         type_eq = type(pattern) == type(value)
@@ -139,7 +171,90 @@ def match_iterable(patterns, values) -> Tuple[bool, List]:
     return True, total_extracted
 
 
+def match_typing_stuff(pattern, value) -> Tuple[bool, List]:
+    if pattern == Any:
+        return match_value(ANY, value)
+    elif is_union(pattern):
+        for subpattern in pattern.__args__:
+            is_matched, extracted = match_value(subpattern, value)
+            if is_matched:
+                return True, extracted
+        else:
+            return False, []
+    elif is_newtype(pattern):
+        return match_value(pattern.__supertype__, value)
+    elif is_generic(pattern):
+        return match_generic(pattern, value)
+    else:
+        return False, []
 
+
+def match_generic(pattern: Generic[T], value) -> Tuple[bool, List]:
+    if get_extra(pattern) == type:       # Type[int] for example
+        real_value = None
+        if is_newtype(value):
+            real_value = value
+            value = get_real_type(value)
+        if not inspect.isclass(value):
+            return False, []
+
+        type_ = pattern.__args__[0]
+        if type_ == Any:
+            return True, [real_value or value]
+        if is_newtype(type_):   # NewType case
+            type_ = get_real_type(type_)
+
+        if issubclass(value, type_):
+            return True, [real_value or value]
+        else:
+            return False, []
+
+    elif get_extra(pattern) == ACallable:
+        if callable(value):
+            spec = inspect.getfullargspec(value)
+            annotations = spec.annotations
+            artgtypes = [annotations.get(arg, Any) for arg in spec.args]
+            ret_type = annotations.get('return', Any)
+            if pattern == Callable[[*artgtypes], ret_type]:
+                return True, [value]
+            else:
+                return False, []
+        else:
+            return False, []
+
+    elif get_extra(pattern) == tuple:
+        return match_value(pattern.__args__, value)
+
+    elif issubclass(get_extra(pattern), Mapping):
+        type_matched, _captured = match_value(get_extra(pattern), value)
+        if not type_matched:
+            return False, []
+        k_type, v_type = pattern.__args__
+
+        key_example = peek(value)
+        key_matched, _captured = match_value(k_type, key_example)
+        if not key_matched:
+            return False, []
+
+        value_matched, _captured = match_value(v_type, value[key_example])
+        if not value_matched:
+            return False, []
+        else:
+            return True, [value]
+
+    elif issubclass(get_extra(pattern), Iterable):
+        type_matched, _captured = match_value(get_extra(pattern), value)
+        if not type_matched:
+            return False, []
+        v_type, = pattern.__args__
+        v = peek(value)
+        value_matched, _captured = match_value(v_type, v)
+        if not value_matched:
+            return False, []
+        else:
+            return True, [value]
+    else:
+        return False, []
 
 
 def match(var, *args, default=NoDefault, strict=True):

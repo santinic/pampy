@@ -152,4 +152,3 @@ class PampyBasicTests(unittest.TestCase):
         self.assertEqual(match(Color.RED, Color.BLUE, "blue", Color.RED, "red", _, "else"), "red")
         self.assertEqual(match(Color.RED, Color.BLUE, "blue", Color.GREEN, "green", _, "else"), "else")
         self.assertEqual(match(1, Color.BLUE, "blue", Color.GREEN, "green", _, "else"), "else")
-        

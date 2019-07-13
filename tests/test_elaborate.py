@@ -1,5 +1,12 @@
 import unittest
 from datetime import datetime
+from typing import (
+    Union,
+    Optional,
+    Tuple,
+    List,
+    NewType,
+)
 
 from functools import reduce
 
@@ -165,3 +172,59 @@ class PampyElaborateTests(unittest.TestCase):
         self.assertEqual(test(datetime(2018, 1, 2)), '1/2 in 2018')
         self.assertEqual(test(datetime(2017, 1, 2, 3, 4, 5)), 'any datetime')
         self.assertEqual(test(11), 'not a datetime')
+
+    def test_typing_example(self):
+
+        timestamp = NewType("timestamp", Union[float, int])
+        year, month, day, hour, minute, second = int, int, int, int, int, int
+        day_tuple = Tuple[year, month, day]
+        dt_tuple = Tuple[year, month, day, hour, minute, second]
+
+        def datetime_p(patterns: List[str]):
+            def f(dt: str):
+                for pattern in patterns:
+                    try:
+                        return True, [datetime.strptime(dt, pattern)]
+                    except Exception:
+                        continue
+                else:
+                    return False, []
+            return f
+
+        def to_datetime(dt: Union[
+            timestamp,
+            day_tuple,
+            dt_tuple,
+            str,
+        ]) -> Optional[datetime]:
+            return match(dt,
+                timestamp, lambda x: datetime.fromtimestamp(x),
+                Union[day_tuple, dt_tuple], lambda *x: datetime(*x),
+                datetime_p(["%Y-%m-%d", "%Y-%m-%d %H:%M:%S"]), lambda x: x,
+                _, None
+            )
+
+        key_date_tuple = (2018, 1, 1)
+        detailed_key_date_tuple = (2018, 1, 1, 12, 5, 6)
+        key_date = datetime(*key_date_tuple)
+        detailed_key_date = datetime(*detailed_key_date_tuple)
+
+        self.assertEqual(to_datetime(key_date_tuple), key_date)
+        self.assertEqual(to_datetime(detailed_key_date_tuple), detailed_key_date)
+
+        key_date_ts = key_date.timestamp()
+        detailed_key_date_ts = int(detailed_key_date.timestamp())
+        self.assertEqual(to_datetime(key_date_ts), key_date)
+        self.assertEqual(to_datetime(detailed_key_date_ts), detailed_key_date)
+
+        key_date_ts_str_a = key_date.strftime("%Y-%m-%d")
+        key_date_ts_str_f = key_date.strftime("%Y-%m-%d %H:%M:%S")
+        key_date_ts_str_w = key_date.strftime("%m-%Y-%d")
+        self.assertEqual(to_datetime(key_date_ts_str_a), key_date)
+        self.assertEqual(to_datetime(key_date_ts_str_f), key_date)
+        self.assertEqual(to_datetime(key_date_ts_str_w), None)
+
+        detailed_key_date_ts_str = detailed_key_date.strftime("%Y-%m-%d %H:%M:%S")
+        self.assertEqual(to_datetime(detailed_key_date_ts_str), detailed_key_date)
+
+        self.assertEqual(to_datetime(set(key_date_tuple)), None)

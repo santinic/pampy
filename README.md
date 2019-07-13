@@ -154,6 +154,86 @@ match(pet, Pet(_, 7), lambda name: name)                        # => 'rover'
 match(pet, Pet(_, _), lambda name, age: (name, age))            # => ('rover', 7)
 ```
 
+## Using typing
+Pampy supports typing annotations.
+
+```python
+
+class Pet:          pass
+class Dog(Pet):     pass
+class Cat(Pet):     pass
+class Hamster(Pet): pass
+
+timestamp = NewType("year", Union[int, float])
+
+def annotated(a: Tuple[int, float], b: str, c: E) -> timestamp:
+    pass
+
+match((1, 2), Tuple[int, int], lambda a, b: (a, b))             # => (1, 2)
+match(1, Union[str, int], lambda x: x)                          # => 1
+match('a', Union[str, int], lambda x: x)                        # => 'a'
+match('a', Optional[str], lambda x: x)                          # => 'a'
+match(None, Optional[str], lambda x: x)                         # => None
+match(Pet, Type[Pet], lambda x: x)                              # => Pet
+match(Cat, Type[Pet], lambda x: x)                              # => Cat
+match(Dog, Any, lambda x: x)                                    # => Dog
+match(Dog, Type[Any], lambda x: x)                              # => Dog
+match(15, timestamp, lambda x: x)                               # => 15
+match(10.0, timestamp, lambda x: x)                             # => 10.0
+match([1, 2, 3], List[int], lambda x: x)                        # => [1, 2, 3]
+match({'a': 1, 'b': 2}, Dict[str, int], lambda x: x)            # => {'a': 1, 'b': 2}
+match(annotated, 
+    Callable[[Tuple[int, float], str, Pet], timestamp], lambda x: x
+)                                                               # => annotated
+```
+For iterable generics actual type of value is guessed based on the first element. 
+```python
+match([1, 2, 3], List[int], lambda x: x)                        # => [1, 2, 3]
+match([1, "b", "a"], List[int], lambda x: x)                    # => [1, "b", "a"]
+match(["a", "b", "c"], List[int], lambda x: x)                  # raises MatchError
+match(["a", "b", "c"], List[Union[str, int]], lambda x: x)      # ["a", "b", "c"]
+
+match({"a": 1, "b": 2}, Dict[str, int], lambda x: x)            # {"a": 1, "b": 2}
+match({"a": 1, "b": "dog"}, Dict[str, int], lambda x: x)        # {"a": 1, "b": "dog"}
+match({"a": 1, 1: 2}, Dict[str, int], lambda x: x)              # {"a": 1, 1: 2}
+match({2: 1, 1: 2}, Dict[str, int], lambda x: x)                # raises MatchError
+match({2: 1, 1: 2}, Dict[Union[str, int], int], lambda x: x)    # {2: 1, 1: 2}
+```
+Iterable generics also match with any of their subtypes.
+```python
+match([1, 2, 3], Iterable[int], lambda x: x)                     # => [1, 2, 3]
+match({1, 2, 3}, Iterable[int], lambda x: x)                     # => {1, 2, 3}
+match(range(10), Iterable[int], lambda x: x)                     # => range(10)
+
+match([1, 2, 3], List[int], lambda x: x)                         # => [1, 2, 3]
+match({1, 2, 3}, List[int], lambda x: x)                         # => raises MatchError
+match(range(10), List[int], lambda x: x)                         # => raises MatchError
+
+match([1, 2, 3], Set[int], lambda x: x)                          # => raises MatchError
+match({1, 2, 3}, Set[int], lambda x: x)                          # => {1, 2, 3}
+match(range(10), Set[int], lambda x: x)                          # => raises MatchError
+```
+For Callable any arg without annotation treated as Any. 
+```python
+def annotated(a: int, b: int) -> float:
+    pass
+    
+def not_annotated(a, b):
+    pass
+    
+def partially_annotated(a, b: float):
+    pass
+
+match(annotated, Callable[[int, int], float], lambda x: x)     # => annotated
+match(not_annotated, Callable[[int, int], float], lambda x: x) # => raises MatchError
+match(not_annotated, Callable[[Any, Any], Any], lambda x: x)   # => not_annotated
+match(annotated, Callable[[Any, Any], Any], lambda x: x)       # => raises MatchError
+match(partially_annotated, 
+    Callable[[Any, float], Any], lambda x: x
+)                                                              # => partially_annotated
+```
+TypeVar is not supported.
+
 ## All the things you can match
 
 As Pattern you can use any Python type, any class, or any Python value.
@@ -183,6 +263,15 @@ Types and Classes are matched via `instanceof(value, pattern)`.
 | `{'type':'dog', age: int }` | Any dict with `type: "dog"` and with an `int` age | `{"type":"dog", "age": 3}` | `3` | `{"type":"dog", "age":2.3}` |
 | `re.compile('(\w+)-(\w+)-cat$')` | Any string that matches that regular expression expr | `"my-fuffy-cat"` | `"my"` and `"puffy"` | `"fuffy-dog"` | 
 | `Pet(name=_, age=7)` | Any Pet dataclass with `age == 7` | `Pet('rover', 7)` | `['rover']` | `Pet('rover', 8)` |
+| `Any` | The same as `_` | | that value | |
+| `Union[int, float, None]` | Any integer or float number or None | `2.35` | `2.35` | any other value |
+| `Optional[int]` | The same as `Union[int, None]` | `2` | `2` | any other value |
+| `Type[MyClass]` | Any subclass of MyClass. **And any class that extends MyClass.** | `MyClass` | that class | any other object |
+| `Callable[[int], float]` | Any callable with exactly that signature | `def a(q:int) -> float: ...` | that function | `def a(q) -> float: ...` |
+| `Tuple[MyClass, int, float]` | The same as `(MyClass, int, float)` | | | |
+| `Mapping[str, int]` Any subtype of `Mapping` acceptable too | any mapping or subtype of mapping with string keys and integer values | `{'a': 2, 'b': 3}` | that dict | `{'a': 'b', 'b': 'c'}` |
+| `Iterable[int]` Any subtype of `Iterable` acceptable too | any iterable or subtype of iterable with integer values | `range(10)` and `[1, 2, 3]` | that iterable | `['a', 'b', 'v']` |
+
 
 ## Using default
 
