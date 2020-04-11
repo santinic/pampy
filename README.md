@@ -288,7 +288,7 @@ False
 ```
 
 ## Using Regular Expressions
-Pampy supports Python's Regex. You can pass a compiled regex as pattern, and Pampy is going to run `patter.search()`, and then pass to the action function the result of `.groups()`.
+Pampy supports Python's Regex. You can pass a compiled regex as pattern, and Pampy is going to run `pattern.search()`, and then pass to the action function the result of `.groups()`.
 
 ```python 
 def what_is(pet):
