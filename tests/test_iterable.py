@@ -1,5 +1,5 @@
 import unittest
-from collections import Iterable
+from collections.abc import Iterable
 
 from pampy import HEAD, TAIL, _, MatchError
 import pampy
