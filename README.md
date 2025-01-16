@@ -1,8 +1,6 @@
 ![Pampy in Star Wars](https://raw.githubusercontent.com/santinic/pampy/master/imgs/pampy.png "Pampy in Star Wars")
 
 # Pampy: Pattern Matching for Python
-[![License MIT](https://go-shields.herokuapp.com/license-MIT-blue.png)]()
-[![Travis-CI Status](https://api.travis-ci.org/santinic/pampy.svg?branch=master)](https://travis-ci.org/santinic/pampy)
 [![Coverage Status](https://coveralls.io/repos/github/santinic/pampy/badge.svg?branch=master)](https://coveralls.io/github/santinic/pampy?branch=master)
 [![PyPI version](https://badge.fury.io/py/pampy.svg)](https://badge.fury.io/py/pampy)
 
